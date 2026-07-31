@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">الإعدادات</string>
+    <string name="choose_app_color">اختر لون التطبيق</string>
+    <string name="dynamic_colors">ألوان النظام الديناميكية</string>
+    <string name="language">اللغة</string>
+    <string name="english">الإنجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="system_default">افتراضي النظام</string>
+    <string name="appearance">المظهر</string>
+    <string name="light">فاتح</string>
+    <string name="dark">داكن</string>
+    <string name="follow_system_colors">اتباع ألوان خلفية النظام</string>
+    <string name="reset_to_defaults">إعادة التعيين للإعدادات الافتراضية</string>
+    <string name="share_app">مشاركة التطبيق</string>
+    <string name="contact_support">التواصل مع الدعم</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="terms_of_service">شروط الخدمة</string>
+    <string name="about_app">حول التطبيق</string>
+    <string name="version">الإصدار</string>
+    <string name="support_about">الدعم وحول التطبيق</string>
+    <string name="update_available_title">إصدار جديد متاح</string>
+    <string name="update_mandatory_warning">هذا التحديث مطلوب للاستمرار في استخدام التطبيق.</string>
+    <string name="update_now_button">تحديث الآن</string>
+    <string name="update_later_button">لاحقاً</string>
+    <string name="release_notes_label">ما الجديد</string>
+</resources>
