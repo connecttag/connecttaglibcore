@@ -93,4 +93,49 @@
     <string name="cancel">إلغاء</string>
     <string name="confirm">تأكيد</string>
     <string name="appearance_policy_managed_toast">بعض إعدادات المظهر يتم إدارتها بواسطة سياسة النظام.</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_loading">جاري التجهيز…</string>
+    <string name="onboarding_skip">تخطي</string>
+    <string name="onboarding_next">التالي</string>
+    <string name="onboarding_start">ابدأ الآن</string>
+    <string name="onboarding_step_progress">الخطوة %1$d من %2$d</string>
+    <string name="onboarding_step_content_description">شاشة تعريفية: %1$s</string>
+
+    <!-- About App & Support -->
+    <string name="support_settings_title">الدعم والسياسات</string>
+    <string name="support_settings_desc">موارد وروابط لمساعدتك في استخدام التطبيق.</string>
+    <string name="support_about_app_title">حول التطبيق</string>
+    <string name="support_about_app_desc">معلومات الإصدار والحقوق.</string>
+    <string name="support_about_developer_title">المطور</string>
+    <string name="support_about_developer_desc">تواصل مع منشئي هذا التطبيق.</string>
+    <string name="support_privacy_policy_title">سياسة الخصوصية</string>
+    <string name="support_privacy_policy_desc">كيفية تعاملنا مع بياناتك.</string>
+    <string name="about_app_website">الموقع الرسمي</string>
+    <string name="about_app_social_links">تواصل معنا</string>
+    <string name="about_app_info_desc">معلومات حول التطبيق</string>
+    <string name="about_app_close_desc">إغلاق نافذة حول</string>
+
+    <!-- Connectivity -->
+    <string name="connectivity_status_online">متصل</string>
+    <string name="connectivity_status_online_with_type">متصل عبر %1$s</string>
+    <string name="connectivity_status_online_vpn">متصل عبر VPN</string>
+    <string name="connectivity_status_offline">لا يوجد اتصال بالإنترنت</string>
+    <string name="connectivity_status_unstable">الاتصال غير مستقر…</string>
+    <string name="connectivity_status_connection_lost">فقد الاتصال</string>
+    <string name="connectivity_type_wifi">Wi-Fi</string>
+    <string name="connectivity_type_cellular">بيانات الهاتف</string>
+    <string name="connectivity_type_ethernet">إيثرنت</string>
+    <string name="connectivity_type_vpn">VPN</string>
+    <string name="connectivity_type_other">الشبكة</string>
+    <string name="connectivity_type_unknown">غير معروف</string>
+    <string name="connectivity_type_none">لا يوجد</string>
+
+    <!-- Permissions -->
+    <string name="permission_rationale_title">مطلوب إذن</string>
+    <string name="permission_rationale_confirm">سماح</string>
+    <string name="permission_rationale_dismiss">ليس الآن</string>
+    <string name="permission_settings_title">مطلوب تغيير الإعدادات</string>
+    <string name="permission_settings_description">تم رفض هذا الإذن بشكل دائم. يرجى تفعيله من إعدادات النظام للمتابعة.</string>
+    <string name="permission_settings_open">فتح الإعدادات</string>
 </resources>

@@ -1,5 +1,7 @@
 package org.connecttag.lib.kotlin.core.aboutapp.compose
 
+import org.connecttag.lib.kotlin.core.aboutapp.AboutAppPresentationMode
+
 object AboutAppPresentationModeParser {
     fun parse(
         value: String?,

@@ -170,6 +170,21 @@ enum class SocialNetworkPlatform(
         iconKey = "googlePlay",
         kind = SocialLinkKind.Store,
         aliases = setOf("google", "google play", "playStore", "androidStore", "play"),
+    ),
+    Pinterest(
+        id = 12,
+        key = "pinterest",
+        displayName = "Pinterest",
+        webUrlPrefix = "https://www.pinterest.com/",
+        appUrlPrefix = "pinterest://user/",
+        androidPackageName = "com.pinterest",
+    ),
+    GitLab(
+        id = 13,
+        key = "gitlab",
+        displayName = "GitLab",
+        webUrlPrefix = "https://gitlab.com/",
+        appUrlPrefix = "https://gitlab.com/",
     );
 
     fun toSpec(): SocialNetworkSpec {

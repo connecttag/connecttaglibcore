@@ -92,4 +92,49 @@
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="appearance_policy_managed_toast">Some appearance settings are managed by system policy.</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_loading">Preparing experience…</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_start">Get Started</string>
+    <string name="onboarding_step_progress">Step %1$d of %2$d</string>
+    <string name="onboarding_step_content_description">Onboarding slide: %1$s</string>
+
+    <!-- About App & Support -->
+    <string name="support_settings_title">Support &amp; Policies</string>
+    <string name="support_settings_desc">Resources and links to help you use the app.</string>
+    <string name="support_about_app_title">About Application</string>
+    <string name="support_about_app_desc">Version information and credits.</string>
+    <string name="support_about_developer_title">Developer</string>
+    <string name="support_about_developer_desc">Contact the creators of this app.</string>
+    <string name="support_privacy_policy_title">Privacy Policy</string>
+    <string name="support_privacy_policy_desc">How we handle your data.</string>
+    <string name="about_app_website">Official Website</string>
+    <string name="about_app_social_links">Connect with us</string>
+    <string name="about_app_info_desc">Information about the app</string>
+    <string name="about_app_close_desc">Close about dialog</string>
+
+    <!-- Connectivity -->
+    <string name="connectivity_status_online">Connected</string>
+    <string name="connectivity_status_online_with_type">Connected via %1$s</string>
+    <string name="connectivity_status_online_vpn">Connected via VPN</string>
+    <string name="connectivity_status_offline">No internet connection</string>
+    <string name="connectivity_status_unstable">Connection unstable…</string>
+    <string name="connectivity_status_connection_lost">Connection lost</string>
+    <string name="connectivity_type_wifi">Wi-Fi</string>
+    <string name="connectivity_type_cellular">Mobile Data</string>
+    <string name="connectivity_type_ethernet">Ethernet</string>
+    <string name="connectivity_type_vpn">VPN</string>
+    <string name="connectivity_type_other">Network</string>
+    <string name="connectivity_type_unknown">Unknown</string>
+    <string name="connectivity_type_none">None</string>
+
+    <!-- Permissions -->
+    <string name="permission_rationale_title">Permission Required</string>
+    <string name="permission_rationale_confirm">Allow</string>
+    <string name="permission_rationale_dismiss">Not Now</string>
+    <string name="permission_settings_title">Settings Required</string>
+    <string name="permission_settings_description">This permission was permanently denied. Please enable it in the system settings to continue.</string>
+    <string name="permission_settings_open">Open Settings</string>
 </resources>

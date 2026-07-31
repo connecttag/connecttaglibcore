@@ -1,8 +1,6 @@
-package org.connecttag.lib.kotlin.core.aboutapp.compose
+package org.connecttag.lib.kotlin.core.aboutapp
 
 import androidx.compose.runtime.Composable
-import org.connecttag.lib.kotlin.core.aboutapp.AboutAppProfile
-import org.connecttag.lib.kotlin.core.aboutapp.AboutAppSocialLink
 
 /**
  * Properties for rendering the About App UI.
@@ -15,7 +13,8 @@ data class AboutAppUiProperties(
     val name: String = profile.name.orEmpty(),
     val description: String? = profile.description,
     val versionText: String? = null,
-    val website: AboutAppWebsite? = null,
+    val websites: List<AboutAppWebsite> = emptyList(),
+    val repositories: List<AboutAppRepository> = emptyList(),
     val socialLinks: List<AboutAppSocialLink> = profile.socialLinks,
     val options: AboutAppPresentationOptions = AboutAppPresentationOptions(),
     val translate: (String) -> String = { it },
@@ -26,20 +25,5 @@ data class AboutAppUiProperties(
     val onDismissRequest: () -> Unit = {},
     val logo: @Composable (contentDescription: String?) -> Unit = {},
     val cover: @Composable () -> Unit = {},
-    val socialIcon: @Composable (AboutAppSocialLink) -> Unit = { link ->
-        // Default implementation will be provided in the dialog file
-    },
+    val socialIcon: @Composable (AboutAppSocialLink) -> Unit = {},
 )
-
-fun AboutAppUiProperties.withDefaults(
-    translate: (String) -> String = this.translate,
-): AboutAppUiProperties {
-    val finalName = profile.name ?: profile.nameKey?.let(translate) ?: name
-    val finalDescription = profile.description ?: profile.descriptionKey?.let(translate) ?: description
-    return copy(
-        name = finalName,
-        description = finalDescription,
-        translate = translate,
-        logoContentDescription = finalName.takeIf { it.isNotBlank() },
-    )
-}

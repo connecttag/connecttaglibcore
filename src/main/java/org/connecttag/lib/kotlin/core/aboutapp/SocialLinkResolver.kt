@@ -1,102 +1,53 @@
 package org.connecttag.lib.kotlin.core.aboutapp
 
-import org.connecttag.lib.kotlin.core.utils.ExternalUriPolicy
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 
-fun interface InstalledAppChecker {
-    fun isAppInstalled(packageName: String): Boolean
-}
+class SocialLinkResolver(private val context: Context) {
 
-object NoInstalledAppChecker : InstalledAppChecker {
-    override fun isAppInstalled(packageName: String): Boolean = false
-}
+    fun openSocialLink(link: AboutAppSocialLink) {
+        val network = link.network
+        val value = link.value
 
-fun resolveSocialLinkAction(
-    link: AboutData,
-    catalog: SocialNetworkCatalog = SocialNetworkCatalog.Default,
-    installedAppChecker: InstalledAppChecker = NoInstalledAppChecker,
-): AboutAppAction? {
-    if (!link.active) return null
-    return resolveSocialLinkAction(
-        platform = link.type,
-        value = link.url,
-        catalog = catalog,
-        installedAppChecker = installedAppChecker,
-    )
-}
-
-fun resolveSocialLinkAction(
-    platform: SocialNetworkPlatform,
-    value: String,
-    catalog: SocialNetworkCatalog = SocialNetworkCatalog.Default,
-    installedAppChecker: InstalledAppChecker = NoInstalledAppChecker,
-): AboutAppAction {
-    val network = catalog.getByKey(platform.key) ?: platform.toSpec()
-    return resolveSocialLinkAction(
-        network = network,
-        value = value,
-        installedAppChecker = installedAppChecker,
-    )
-}
-
-fun resolveSocialLinkAction(
-    networkName: String,
-    value: String,
-    catalog: SocialNetworkCatalog = SocialNetworkCatalog.Default,
-    installedAppChecker: InstalledAppChecker = NoInstalledAppChecker,
-): AboutAppAction {
-    val network = catalog.getByKey(networkName)
-        ?: SocialNetworkPlatform.getByName(networkName)?.toSpec()
-        ?: SocialNetworkSpec(
-            key = networkName,
-            displayName = networkName,
-            webUrlPrefix = "",
-            appUrlPrefix = null,
-        )
-    return resolveSocialLinkAction(
-        network = network,
-        value = value,
-        installedAppChecker = installedAppChecker,
-    )
-}
-
-fun resolveSocialLinkAction(
-    network: SocialNetworkSpec,
-    value: String,
-    installedAppChecker: InstalledAppChecker = NoInstalledAppChecker,
-): AboutAppAction {
-    val trimmedValue = value.trim()
-    if (network.kind == SocialLinkKind.Email) {
-        return AboutAppAction.SendEmail(trimmedValue)
+        when (network.kind) {
+            SocialLinkKind.Email -> sendEmail(value)
+            SocialLinkKind.Store -> openStore(value)
+            SocialLinkKind.Url -> openUrl(network.appUrlPrefix + value, network.webUrlPrefix + value)
+        }
     }
 
-    if (network.kind == SocialLinkKind.Store) {
-        return AboutAppAction.OpenPlayStore(trimmedValue)
+    private fun openUrl(appUrl: String?, webUrl: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        if (appUrl != null) {
+            intent.data = Uri.parse(appUrl)
+            if (intent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(intent)
+                return
+            }
+        }
+        intent.data = Uri.parse(webUrl)
+        context.startActivity(intent)
     }
 
-    val prefix = if (
-        !network.androidPackageName.isNullOrBlank() &&
-        !network.appUrlPrefix.isNullOrBlank() &&
-        installedAppChecker.isAppInstalled(network.androidPackageName)
-    ) {
-        network.appUrlPrefix
-    } else {
-        network.webUrlPrefix
+    private fun sendEmail(email: String) {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:$email")
+        }
+        context.startActivity(Intent.createChooser(intent, "Send Email"))
     }
 
-    val url = if (ExternalUriPolicy.isSupportedAbsoluteUri(trimmedValue)) {
-        trimmedValue
-    } else {
-        prefix + trimmedValue
+    private fun openStore(packageName: String) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse("market://details?id=$packageName")
+        }
+        if (intent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(intent)
+        } else {
+            val webIntent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+            }
+            context.startActivity(webIntent)
+        }
     }
-    return AboutAppAction.OpenUrl(url)
-}
-
-fun resolveGooglePlayWebFallbackAction(
-    packageName: String,
-    policySource: SocialLinkPolicySource = AllowAllSocialLinkPolicySource,
-): AboutAppAction? {
-    if (!policySource.canOpenGooglePlayLinks()) return null
-    return AboutAppAction.OpenUrl(
-        SocialNetworkPlatform.GooglePlay.webUrlPrefix + packageName.trim(),
-    )
 }

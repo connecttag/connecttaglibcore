@@ -1,17 +1,17 @@
-package org.connecttag.lib.kotlin.core.aboutapp.compose
+package org.connecttag.lib.kotlin.core.aboutapp
 
 data class AboutAppDialogLabels(
     val infoContentDescription: String,
     val closeContentDescription: String,
     val websiteTitle: String,
-    val addressTitle: String? = null,
-    val phonesTitle: String? = null,
-    val storesTitle: String? = null,
-    val privacyPolicyTitle: String? = null,
-    val termsOfUseTitle: String? = null,
 )
 
 data class AboutAppWebsite(
+    val label: String,
+    val url: String,
+)
+
+data class AboutAppRepository(
     val label: String,
     val url: String,
 )

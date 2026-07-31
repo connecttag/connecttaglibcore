@@ -1,6 +1,5 @@
 package org.connecttag.lib.kotlin.core.aboutapp.compose
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -11,30 +10,29 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Rule
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import org.connecttag.lib.kotlin.core.R
-import org.connecttag.lib.kotlin.core.aboutapp.AboutAppProfile
-import org.connecttag.lib.kotlin.core.aboutapp.AboutAppSocialLink
-import org.connecttag.lib.kotlin.core.aboutapp.AppStoreSpec
+import org.connecttag.lib.kotlin.core.aboutapp.*
 import org.connecttag.lib.kotlin.core.settings.SettingsDuotoneIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,9 +41,8 @@ fun AboutAppPresentation(
     properties: AboutAppUiProperties,
     modifier: Modifier = Modifier,
 ) {
-    val translate = properties.translate
-    val name = properties.profile.name ?: properties.profile.nameKey?.let(translate) ?: properties.name
-    val description = properties.profile.description ?: properties.profile.descriptionKey?.let(translate) ?: properties.description
+    val name = properties.profile.name ?: properties.name
+    val description = properties.profile.description ?: properties.description
     val finalProperties = properties.copy(name = name, description = description)
 
     val content: @Composable (Modifier, Boolean) -> Unit = { contentModifier, isFullScreen ->
@@ -101,10 +98,6 @@ fun AboutAppPresentation(
                             )
                         }
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    ),
                 )
             },
         ) { paddingValues ->
@@ -119,7 +112,6 @@ fun AboutAppPresentation(
     }
 }
 
-/** Legacy support and simple builder for AboutAppPresentation. */
 @Composable
 fun AboutAppPresentation(
     profile: AboutAppProfile,
@@ -132,17 +124,18 @@ fun AboutAppPresentation(
     presentationMode: AboutAppPresentationMode = AboutAppPresentationMode.Dialog,
     options: AboutAppPresentationOptions = AboutAppPresentationOptions(mode = presentationMode),
     translate: (String) -> String = { it },
-    name: String = profile.name ?: profile.nameKey?.let(translate).orEmpty(),
-    description: String? = profile.description ?: profile.descriptionKey?.let(translate),
+    name: String = profile.name ?: profile.nameKey.orEmpty(),
+    description: String? = profile.description ?: profile.descriptionKey,
     versionText: String? = null,
-    website: AboutAppWebsite? = null,
+    websites: List<AboutAppWebsite> = emptyList(),
+    repositories: List<AboutAppRepository> = emptyList(),
     socialLinks: List<AboutAppSocialLink> = profile.socialLinks,
     logoContentDescription: String? = name.takeIf { it.isNotBlank() },
     logo: @Composable (contentDescription: String?) -> Unit = {},
     cover: @Composable () -> Unit = {},
     socialIcon: @Composable (AboutAppSocialLink) -> Unit = { link ->
         DefaultSocialIcon(
-            contentDescription = link.label ?: translate(link.network.displayName),
+            contentDescription = link.label ?: link.network.displayName,
             iconKey = link.network.iconKey,
         )
     },
@@ -155,7 +148,8 @@ fun AboutAppPresentation(
             name = name,
             description = description,
             versionText = versionText,
-            website = website,
+            websites = websites,
+            repositories = repositories,
             socialLinks = socialLinks,
             options = options,
             translate = translate,
@@ -181,10 +175,11 @@ fun AboutAppDialog(
     onSocialLinkClick: (AboutAppSocialLink) -> Unit,
     modifier: Modifier = Modifier,
     translate: (String) -> String = { it },
-    name: String = profile.name ?: profile.nameKey?.let(translate).orEmpty(),
-    description: String? = profile.description ?: profile.descriptionKey?.let(translate),
+    name: String = profile.name ?: profile.nameKey.orEmpty(),
+    description: String? = profile.description ?: profile.descriptionKey,
     versionText: String? = null,
-    website: AboutAppWebsite? = null,
+    websites: List<AboutAppWebsite> = emptyList(),
+    repositories: List<AboutAppRepository> = emptyList(),
     socialLinks: List<AboutAppSocialLink> = profile.socialLinks,
     options: AboutAppPresentationOptions = AboutAppPresentationOptions(),
     logoContentDescription: String? = name.takeIf { it.isNotBlank() },
@@ -192,7 +187,7 @@ fun AboutAppDialog(
     cover: @Composable () -> Unit = {},
     socialIcon: @Composable (AboutAppSocialLink) -> Unit = { link ->
         DefaultSocialIcon(
-            contentDescription = link.label ?: translate(link.network.displayName),
+            contentDescription = link.label ?: link.network.displayName,
             iconKey = link.network.iconKey,
         )
     },
@@ -210,7 +205,8 @@ fun AboutAppDialog(
         name = name,
         description = description,
         versionText = versionText,
-        website = website,
+        websites = websites,
+        repositories = repositories,
         socialLinks = socialLinks,
         logoContentDescription = logoContentDescription,
         logo = logo,
@@ -228,192 +224,77 @@ fun AboutAppContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 14.dp, vertical = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         properties.cover()
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            if (showCloseButton) {
-                AboutAppHeader(
-                    title = properties.title,
-                    labels = properties.labels,
-                    onDismissRequest = properties.onDismissRequest,
-                )
-            }
-            properties.logo(properties.logoContentDescription)
-            Text(
-                text = properties.name,
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(top = 8.dp),
-            )
-            if (!properties.description.isNullOrBlank()) {
-                Text(
-                    text = properties.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 12.dp),
-                )
-            } else {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            if (!properties.versionText.isNullOrBlank()) {
-                Text(
-                    text = properties.versionText,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-
-            // Address and Phones
-            val validPhones = properties.profile.phoneNumbers.filter { it.isNotBlank() }
-            val hasAddress = !properties.profile.address.isNullOrBlank()
-            if (hasAddress || validPhones.isNotEmpty()) {
-                InfoSection(
-                    address = properties.profile.address.takeIf { !it.isNullOrBlank() },
-                    phones = validPhones
-                )
-            }
-
-            if (properties.website != null && (properties.website.url.isNotBlank())) {
-                WebsiteRow(
-                    website = properties.website,
-                    labels = properties.labels,
-                    onWebsiteClick = properties.onWebsiteClick,
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-
-            // Stores Section
-            if (properties.profile.stores.isNotEmpty()) {
-                StoresSection(
-                    stores = properties.profile.stores,
-                    labels = properties.labels,
-                    onUrlClick = properties.onWebsiteClick
-                )
-            }
-
-            // Policies Section
-            if (!properties.profile.privacyPolicyUrl.isNullOrBlank() || !properties.profile.termsOfUseUrl.isNullOrBlank()) {
-                PoliciesSection(
-                    privacyUrl = properties.profile.privacyPolicyUrl,
-                    termsUrl = properties.profile.termsOfUseUrl,
-                    labels = properties.labels,
-                    onUrlClick = properties.onWebsiteClick
-                )
-            }
-
-            MetadataSection(
-                metadata = properties.profile.metadata,
-                translate = properties.translate,
-            )
-
-            SocialLinksRow(
-                socialLinks = properties.socialLinks.filter { it.active },
-                onSocialLinkClick = properties.onSocialLinkClick,
-                onSocialLinkLongClick = properties.onSocialLinkLongClick,
-                socialIcon = properties.socialIcon,
-                spacingDp = properties.options.socialSpacingDp,
+        if (showCloseButton) {
+            AboutAppHeader(
+                title = properties.title,
+                labels = properties.labels,
+                onDismissRequest = properties.onDismissRequest,
             )
         }
-    }
-}
-
-@Composable
-private fun InfoSection(
-    address: String?,
-    phones: List<String>
-) {
-    val validPhones = phones.filter { it.isNotBlank() }
-    if (address.isNullOrBlank() && validPhones.isEmpty()) return
-
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (!address.isNullOrBlank()) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = address, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
-            }
-        }
-        validPhones.forEach { phone ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Phone, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = phone, style = MaterialTheme.typography.bodySmall)
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun StoresSection(
-    stores: List<AppStoreSpec>,
-    labels: AboutAppDialogLabels,
-    onUrlClick: (String) -> Unit
-) {
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        properties.logo(properties.logoContentDescription)
         Text(
-            text = labels.storesTitle ?: "Available on",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
+            text = properties.name,
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(top = 8.dp),
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            stores.forEach { store ->
-                AssistChip(
-                    onClick = { onUrlClick(store.url) },
-                    label = { Text(store.label ?: store.type) },
-                    leadingIcon = { Icon(Icons.Default.ShoppingBag, contentDescription = null, modifier = Modifier.size(18.dp)) }
-                )
-            }
+        if (!properties.description.isNullOrBlank()) {
+            Text(
+                text = properties.description,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 12.dp),
+            )
+        } else {
+            Spacer(modifier = Modifier.height(8.dp))
         }
-    }
-}
+        if (!properties.versionText.isNullOrBlank()) {
+            Text(
+                text = properties.versionText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+        }
 
-@Composable
-private fun PoliciesSection(
-    privacyUrl: String?,
-    termsUrl: String?,
-    labels: AboutAppDialogLabels,
-    onUrlClick: (String) -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        privacyUrl?.let {
-            TextButton(onClick = { onUrlClick(it) }, modifier = Modifier.weight(1f)) {
-                Icon(Icons.Default.Policy, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = labels.privacyPolicyTitle ?: "Privacy Policy", style = MaterialTheme.typography.labelMedium)
-            }
+        properties.websites.forEach { website ->
+            WebsiteRow(
+                website = website,
+                labels = properties.labels,
+                onWebsiteClick = properties.onWebsiteClick,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
         }
-        termsUrl?.let {
-            TextButton(onClick = { onUrlClick(it) }, modifier = Modifier.weight(1f)) {
-                Icon(Icons.AutoMirrored.Filled.Rule, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = labels.termsOfUseTitle ?: "Terms of Use", style = MaterialTheme.typography.labelMedium)
-            }
+
+        properties.repositories.forEach { repo ->
+            RepositoryRow(
+                repo = repo,
+                onRepoClick = properties.onWebsiteClick,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
         }
+
+        MetadataSection(
+            metadata = properties.profile.metadata,
+            translate = properties.translate,
+        )
+
+        SocialLinksRow(
+            socialLinks = properties.socialLinks.filter { it.active },
+            onSocialLinkClick = properties.onSocialLinkClick,
+            onSocialLinkLongClick = properties.onSocialLinkLongClick,
+            socialIcon = properties.socialIcon,
+            spacingDp = properties.options.socialSpacingDp,
+        )
     }
 }
 
@@ -493,7 +374,7 @@ private fun WebsiteRow(
     labels: AboutAppDialogLabels,
     onWebsiteClick: (String) -> Unit,
 ) {
-    Surface(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
@@ -501,34 +382,66 @@ private fun WebsiteRow(
                 role = Role.Button,
             ) {
                 onWebsiteClick(website.url)
-            },
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            SettingsDuotoneIcon(
-                imageVector = Icons.Default.Language,
-                contentDescription = labels.websiteTitle,
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = labels.websiteTitle,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Text(
-                    text = website.label,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    overflow = TextOverflow.Visible,
-                )
             }
+            .padding(horizontal = 4.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Language,
+            contentDescription = labels.websiteTitle,
+            tint = MaterialTheme.colorScheme.primary,
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = website.label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = website.url,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+        }
+    }
+}
+
+@Composable
+private fun RepositoryRow(
+    repo: AboutAppRepository,
+    onRepoClick: (String) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(role = Role.Button) {
+                onRepoClick(repo.url)
+            }
+            .padding(horizontal = 4.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Link,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = repo.label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = repo.url,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
         }
     }
 }
@@ -538,30 +451,28 @@ private fun WebsiteRow(
 private fun SocialLinksRow(
     socialLinks: List<AboutAppSocialLink>,
     onSocialLinkClick: (AboutAppSocialLink) -> Unit,
-    onSocialLinkLongClick: (AboutAppSocialLink) -> Unit = {},
+    onSocialLinkLongClick: (AboutAppSocialLink) -> Unit,
     socialIcon: @Composable (AboutAppSocialLink) -> Unit,
     spacingDp: Int = 8,
 ) {
-    val validLinks = socialLinks.filter { it.active && it.value.isNotBlank() }
-    if (validLinks.isEmpty()) return
+    if (socialLinks.isEmpty()) return
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp),
+            .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(spacingDp.dp, Alignment.CenterHorizontally),
         verticalArrangement = Arrangement.spacedBy(spacingDp.dp),
     ) {
-        validLinks.forEach { link ->
+        socialLinks.forEach { link ->
             Box(
                 modifier = Modifier
-                    .size(48.dp)
                     .clip(CircleShape)
                     .combinedClickable(
                         onClick = { onSocialLinkClick(link) },
-                        onLongClick = { onSocialLinkLongClick(link) },
-                        role = Role.Button,
-                    ),
-                contentAlignment = Alignment.Center,
+                        onLongClick = { onSocialLinkLongClick(link) }
+                    )
+                    .padding(4.dp),
+                contentAlignment = Alignment.Center
             ) {
                 socialIcon(link)
             }
@@ -607,6 +518,7 @@ private fun resolveSocialIconResource(iconKey: String?): Int? {
         "tiktok" -> R.drawable.ic_tiktok
         "threads" -> R.drawable.ic_threads
         "googleplay", "playstore", "play" -> R.drawable.ic_google_play
+        "pinterest", "github", "gitlab" -> R.drawable.ic_website
         else -> null
     }
 }
