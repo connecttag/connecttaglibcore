@@ -62,4 +62,21 @@ abstract class BaseStateViewModel<State : MviState, Effect : MviEffect>(
     protected fun launchMain(block: suspend () -> Unit): Job = launch(dispatchers.main, block)
     protected fun launchIo(block: suspend () -> Unit): Job = launch(dispatchers.io, block)
     protected fun launchDefault(block: suspend () -> Unit): Job = launch(dispatchers.default, block)
+
+    /**
+     * Validates a field and returns true if successful.
+     */
+    protected fun <T> validateField(
+        value: T,
+        validator: Validator<T>,
+        onError: (Int) -> Unit = {}
+    ): Boolean {
+        return when (val result = validator.validate(value)) {
+            is ValidationResult.Success -> true
+            is ValidationResult.Failure -> {
+                onError(result.messageKey)
+                false
+            }
+        }
+    }
 }

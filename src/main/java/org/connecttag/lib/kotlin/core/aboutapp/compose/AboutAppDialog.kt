@@ -275,10 +275,12 @@ fun AboutAppContent(
             }
 
             // Address and Phones
-            if (!properties.profile.address.isNullOrBlank() || properties.profile.phoneNumbers.isNotEmpty()) {
+            val validPhones = properties.profile.phoneNumbers.filter { it.isNotBlank() }
+            val hasAddress = !properties.profile.address.isNullOrBlank()
+            if (hasAddress || validPhones.isNotEmpty()) {
                 InfoSection(
-                    address = properties.profile.address,
-                    phones = properties.profile.phoneNumbers
+                    address = properties.profile.address.takeIf { !it.isNullOrBlank() },
+                    phones = validPhones
                 )
             }
 
@@ -331,19 +333,22 @@ private fun InfoSection(
     address: String?,
     phones: List<String>
 ) {
+    val validPhones = phones.filter { it.isNotBlank() }
+    if (address.isNullOrBlank() && validPhones.isEmpty()) return
+
     Column(
         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        address?.let {
+        if (!address.isNullOrBlank()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = it, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
+                Text(text = address, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
             }
         }
-        phones.forEach { phone ->
+        validPhones.forEach { phone ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Phone, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
@@ -536,7 +541,8 @@ private fun SocialLinksRow(
     socialIcon: @Composable (AboutAppSocialLink) -> Unit,
     spacingDp: Int = 8,
 ) {
-    if (socialLinks.isEmpty()) return
+    val validLinks = socialLinks.filter { it.active && it.value.isNotBlank() }
+    if (validLinks.isEmpty()) return
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -544,7 +550,7 @@ private fun SocialLinksRow(
         horizontalArrangement = Arrangement.spacedBy(spacingDp.dp, Alignment.CenterHorizontally),
         verticalArrangement = Arrangement.spacedBy(spacingDp.dp),
     ) {
-        socialLinks.forEach { link ->
+        validLinks.forEach { link ->
             Box(
                 modifier = Modifier
                     .size(48.dp)

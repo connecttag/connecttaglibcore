@@ -14,6 +14,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -199,9 +204,14 @@ fun ToggleSettingRow(item: SettingItem.Toggle) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChoiceSettingRow(item: SettingItem.Choice) {
     val selectedOption = item.options.find { it.value == item.selectedOption }
+    var showSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
     ClickableSettingRow(
         item = SettingItem.Clickable(
             key = item.key,
@@ -209,9 +219,30 @@ fun ChoiceSettingRow(item: SettingItem.Choice) {
             summary = selectedOption?.title ?: item.summary,
             icon = item.icon,
             enabled = item.enabled,
-            onClick = { /* Handle by showing selection bottom sheet or dialog */ }
+            onClick = { showSheet = true }
         )
     )
+
+    if (showSheet) {
+        SelectionBottomSheet(
+            sheetState = sheetState,
+            title = item.title,
+            icon = item.icon,
+            options = item.options,
+            selectedValue = item.selectedOption,
+            onValueChange = { newValue ->
+                scope.launch {
+                    item.onOptionSelected(newValue)
+                    sheetState.hide()
+                }.invokeOnCompletion {
+                    if (!sheetState.isVisible) {
+                        showSheet = false
+                    }
+                }
+            },
+            onDismiss = { showSheet = false }
+        )
+    }
 }
 
 @Composable

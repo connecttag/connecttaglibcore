@@ -24,4 +24,9 @@
     <string name="update_now_button">تحديث الآن</string>
     <string name="update_later_button">لاحقاً</string>
     <string name="release_notes_label">ما الجديد</string>
+    <string name="no_internet_connection">لا يوجد اتصال بالإنترنت</string>
+    <string name="retry_connection">إعادة المحاولة</string>
+    <string name="invalid_email">عنوان بريد إلكتروني غير صالح</string>
+    <string name="invalid_phone">رقم هاتف غير صالح</string>
+    <string name="weak_password">كلمة المرور ضعيفة جداً (8 أحرف على الأقل)</string>
 </resources>
