@@ -1,8 +1,5 @@
 package org.connecttag.lib.kotlin.core.settings
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -12,16 +9,8 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.takeOrElse
@@ -29,7 +18,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -92,22 +80,32 @@ private fun SettingsDuotoneIconContainer(
 }
 
 @Composable
-fun RenderSettingItem(item: SettingItem) {
+fun RenderSettingItem(
+    item: SettingItem,
+    onToggleChanged: ((String, Boolean) -> Unit)? = null,
+    onChoiceClicked: ((SettingItem.Choice) -> Unit)? = null,
+    onClick: ((String) -> Unit)? = null,
+) {
     when (item) {
-        is SettingItem.Clickable -> ClickableSettingRow(item)
-        is SettingItem.Toggle -> ToggleSettingRow(item)
-        is SettingItem.Choice -> ChoiceSettingRow(item)
-        is SettingItem.Action -> LegacyActionRow(item)
+        is SettingItem.Clickable -> ClickableSettingRow(item, onClick)
+        is SettingItem.Toggle -> ToggleSettingRow(item, onToggleChanged)
+        is SettingItem.Choice -> ChoiceSettingRow(item, onChoiceClicked)
+        is SettingItem.Action -> LegacyActionRow(item, onClick)
         is SettingItem.Custom -> item.content()
     }
 }
 
 @Composable
-fun ClickableSettingRow(item: SettingItem.Clickable) {
+fun ClickableSettingRow(
+    item: SettingItem.Clickable,
+    onGlobalClick: ((String) -> Unit)? = null
+) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(enabled = item.enabled, onClick = item.onClick),
+            .clickable(enabled = item.enabled) {
+                onGlobalClick?.invoke(item.key) ?: item.onClick()
+            },
         color = Color.Transparent
     ) {
         Row(
@@ -155,11 +153,17 @@ fun ClickableSettingRow(item: SettingItem.Clickable) {
 }
 
 @Composable
-fun ToggleSettingRow(item: SettingItem.Toggle) {
+fun ToggleSettingRow(
+    item: SettingItem.Toggle,
+    onGlobalToggleChanged: ((String, Boolean) -> Unit)? = null
+) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(enabled = item.enabled) { item.onCheckedChange(!item.checked) },
+            .clickable(enabled = item.enabled) {
+                val newValue = !item.checked
+                onGlobalToggleChanged?.invoke(item.key, newValue) ?: item.onCheckedChange(newValue)
+            },
         color = Color.Transparent
     ) {
         Row(
@@ -196,7 +200,9 @@ fun ToggleSettingRow(item: SettingItem.Toggle) {
             } else {
                 Switch(
                     checked = item.checked,
-                    onCheckedChange = item.onCheckedChange,
+                    onCheckedChange = {
+                        onGlobalToggleChanged?.invoke(item.key, it) ?: item.onCheckedChange(it)
+                    },
                     enabled = item.enabled
                 )
             }
@@ -204,13 +210,12 @@ fun ToggleSettingRow(item: SettingItem.Toggle) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChoiceSettingRow(item: SettingItem.Choice) {
+fun ChoiceSettingRow(
+    item: SettingItem.Choice,
+    onGlobalChoiceClicked: ((SettingItem.Choice) -> Unit)? = null
+) {
     val selectedOption = item.options.find { it.value == item.selectedOption }
-    var showSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
 
     ClickableSettingRow(
         item = SettingItem.Clickable(
@@ -219,34 +224,16 @@ fun ChoiceSettingRow(item: SettingItem.Choice) {
             summary = selectedOption?.title ?: item.summary,
             icon = item.icon,
             enabled = item.enabled,
-            onClick = { showSheet = true }
+            onClick = { onGlobalChoiceClicked?.invoke(item) }
         )
     )
-
-    if (showSheet) {
-        SelectionBottomSheet(
-            sheetState = sheetState,
-            title = item.title,
-            icon = item.icon,
-            options = item.options,
-            selectedValue = item.selectedOption,
-            onValueChange = { newValue ->
-                scope.launch {
-                    item.onOptionSelected(newValue)
-                    sheetState.hide()
-                }.invokeOnCompletion {
-                    if (!sheetState.isVisible) {
-                        showSheet = false
-                    }
-                }
-            },
-            onDismiss = { showSheet = false }
-        )
-    }
 }
 
 @Composable
-fun LegacyActionRow(item: SettingItem.Action) {
+fun LegacyActionRow(
+    item: SettingItem.Action,
+    onGlobalClick: ((String) -> Unit)? = null
+) {
     ClickableSettingRow(
         item = SettingItem.Clickable(
             key = item.key,
@@ -254,13 +241,18 @@ fun LegacyActionRow(item: SettingItem.Action) {
             summary = item.summary,
             icon = item.icon,
             enabled = item.enabled,
-            onClick = item.onClick
+            onClick = { onGlobalClick?.invoke(item.key) ?: item.onClick() }
         )
     )
 }
 
 @Composable
-fun RenderSettingSection(section: SettingSection) {
+fun RenderSettingSection(
+    section: SettingSection,
+    onToggleChanged: ((String, Boolean) -> Unit)? = null,
+    onChoiceClicked: ((SettingItem.Choice) -> Unit)? = null,
+    onClick: ((String) -> Unit)? = null,
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -301,7 +293,12 @@ fun RenderSettingSection(section: SettingSection) {
         ) {
             Column {
                 section.items.forEachIndexed { index, item ->
-                    RenderSettingItem(item)
+                    RenderSettingItem(
+                        item = item,
+                        onToggleChanged = onToggleChanged,
+                        onChoiceClicked = onChoiceClicked,
+                        onClick = onClick
+                    )
                     if (index < section.items.size - 1) {
                         HorizontalDivider(
                             modifier = Modifier.padding(horizontal = 16.dp),
@@ -312,31 +309,5 @@ fun RenderSettingSection(section: SettingSection) {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun OverviewValueRow(
-    label: String,
-    value: String,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = label,
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyMedium,
-            color = color.copy(alpha = 0.7f),
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleSmall,
-            color = color,
-            textAlign = TextAlign.End,
-        )
     }
 }

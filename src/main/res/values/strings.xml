@@ -28,4 +28,68 @@
     <string name="invalid_email">Invalid email address</string>
     <string name="invalid_phone">Invalid phone number</string>
     <string name="weak_password">Password is too weak (min 8 chars)</string>
+
+    <!-- Privacy Policy -->
+    <string name="privacy_policy_title">Privacy and policies</string>
+    <string name="privacy_policy_back">Back</string>
+    <string name="privacy_policy_loading">Loading published policies…</string>
+    <string name="privacy_policy_unavailable">Published policies are unavailable.</string>
+    <string name="privacy_policy_retry">Retry</string>
+    <string name="privacy_policy_open_browser">Open this policy in your browser.</string>
+    <string name="privacy_policy_open_url">Open URL</string>
+    <string name="privacy_policy_decline">Decline</string>
+    <string name="privacy_policy_accept">Accept</string>
+    <string name="privacy_policy_close">Close</string>
+    <string name="privacy_policy_version_effective">Version %1$s · Effective %2$s</string>
+
+    <!-- Notifications -->
+    <string name="notifications_navigation_back_content_description">Back</string>
+    <string name="notifications_screen_title">Notifications</string>
+    <string name="notifications_update_failed">Failed to update notifications at this time.</string>
+    <string name="notifications_loading">Updating notifications...</string>
+    <string name="notifications_empty_title">No notifications yet</string>
+    <string name="notifications_empty_message">Active notifications from the server will appear here.</string>
+    <string name="notifications_mark_all_read">Mark all as read</string>
+    <string name="notifications_open_action">Open</string>
+    <string name="notifications_detail_title">Notification Details</string>
+    <string name="notifications_detail_missing_title">Notification unavailable</string>
+    <string name="notifications_detail_missing_message">Could not find this notification. Pull to refresh or try again later.</string>
+    <string name="notifications_refresh">Refresh</string>
+    <string name="notifications_activate_now">Activate Now</string>
+    <string name="notifications_view_details">View Details</string>
+    <string name="notifications_unread_badge">NEW</string>
+    <string name="notifications_priority_urgent">Urgent</string>
+    <string name="notifications_priority_high">High</string>
+    <string name="notifications_summary">%1$d notification(s), %2$d unread</string>
+    <string name="notifications_type_order">Orders</string>
+    <string name="notifications_type_offer">Offers</string>
+    <string name="notifications_type_security">Security</string>
+    <string name="notifications_type_update">Updates</string>
+    <string name="notifications_type_service">Service</string>
+    <string name="notifications_filter_all">All</string>
+    <string name="notifications_filter_unread">Unread</string>
+    <string name="notifications_filter_orders">Orders</string>
+    <string name="notifications_filter_offers">Offers</string>
+    <string name="notifications_filter_security">Security</string>
+    <string name="notifications_section_today">Today</string>
+    <string name="notifications_section_week">This Week</string>
+    <string name="notifications_section_older">Older</string>
+    <string name="notifications_archived">Notification archived</string>
+    <string name="notifications_archive_failed">Failed to archive notification, restored.</string>
+    <string name="notifications_undo">Undo</string>
+    <string name="notifications_archive_hint">Swipe to archive notification</string>
+
+    <!-- Settings Enhanced -->
+    <string name="settings_save_success">Settings saved successfully</string>
+    <string name="settings_reset_to_default">Settings reset to default</string>
+    <string name="settings_unsaved_changes">You have unsaved changes</string>
+    <string name="save_all_changes">Save Changes</string>
+    <string name="discard_changes">Discard</string>
+    <string name="reset_settings">Reset Settings</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="clear_cache_message">Are you sure you want to clear the application cache? This will not delete your data.</string>
+    <string name="reset_settings_message">Are you sure you want to reset all settings to their default values?</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="appearance_policy_managed_toast">Some appearance settings are managed by system policy.</string>
 </resources>

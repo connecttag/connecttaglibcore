@@ -74,6 +74,7 @@ fun AboutAppPresentation(
         }
         AboutAppPresentationMode.BottomSheet -> ModalBottomSheet(
             onDismissRequest = finalProperties.onDismissRequest,
+            contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
             dragHandle = if (finalProperties.options.showDragHandle) {
                 { BottomSheetDefaults.DragHandle() }
             } else {

@@ -29,4 +29,68 @@
     <string name="invalid_email">عنوان بريد إلكتروني غير صالح</string>
     <string name="invalid_phone">رقم هاتف غير صالح</string>
     <string name="weak_password">كلمة المرور ضعيفة جداً (8 أحرف على الأقل)</string>
+
+    <!-- Privacy Policy -->
+    <string name="privacy_policy_title">الخصوصية والسياسات</string>
+    <string name="privacy_policy_back">رجوع</string>
+    <string name="privacy_policy_loading">جارٍ تحميل السياسات المنشورة…</string>
+    <string name="privacy_policy_unavailable">السياسات المنشورة غير متاحة.</string>
+    <string name="privacy_policy_retry">إعادة المحاولة</string>
+    <string name="privacy_policy_open_browser">افتح هذه السياسة في المتصفح.</string>
+    <string name="privacy_policy_open_url">فتح الرابط</string>
+    <string name="privacy_policy_decline">رفض</string>
+    <string name="privacy_policy_accept">موافقة</string>
+    <string name="privacy_policy_close">إغلاق</string>
+    <string name="privacy_policy_version_effective">الإصدار %1$s · ساري من %2$s</string>
+
+    <!-- Notifications -->
+    <string name="notifications_navigation_back_content_description">رجوع</string>
+    <string name="notifications_screen_title">الإشعارات</string>
+    <string name="notifications_update_failed">تعذر تحديث الإشعارات حالياً.</string>
+    <string name="notifications_loading">جاري تحديث الإشعارات...</string>
+    <string name="notifications_empty_title">لا توجد إشعارات حالياً</string>
+    <string name="notifications_empty_message">ستظهر هنا الإشعارات النشطة القادمة من السيرفر.</string>
+    <string name="notifications_mark_all_read">تحديد الكل كمقروء</string>
+    <string name="notifications_open_action">فتح</string>
+    <string name="notifications_detail_title">تفاصيل الإشعار</string>
+    <string name="notifications_detail_missing_title">الإشعار غير متاح</string>
+    <string name="notifications_detail_missing_message">تعذر العثور على هذا الإشعار. اسحب للتحديث أو أعد المحاولة لاحقاً.</string>
+    <string name="notifications_refresh">تحديث</string>
+    <string name="notifications_activate_now">تفعيل الآن</string>
+    <string name="notifications_view_details">تفاصيل العرض</string>
+    <string name="notifications_unread_badge">جديد</string>
+    <string name="notifications_priority_urgent">عاجل</string>
+    <string name="notifications_priority_high">مهم</string>
+    <string name="notifications_summary">%1$d إشعار، منها %2$d غير مقروء</string>
+    <string name="notifications_type_order">الطلبات</string>
+    <string name="notifications_type_offer">العروض</string>
+    <string name="notifications_type_security">الأمان</string>
+    <string name="notifications_type_update">التحديثات</string>
+    <string name="notifications_type_service">الخدمة</string>
+    <string name="notifications_filter_all">الكل</string>
+    <string name="notifications_filter_unread">غير المقروء</string>
+    <string name="notifications_filter_orders">الطلبات</string>
+    <string name="notifications_filter_offers">العروض</string>
+    <string name="notifications_filter_security">الأمان</string>
+    <string name="notifications_section_today">اليوم</string>
+    <string name="notifications_section_week">هذا الأسبوع</string>
+    <string name="notifications_section_older">الأقدم</string>
+    <string name="notifications_archived">تمت أرشفة الإشعار</string>
+    <string name="notifications_archive_failed">تعذرت أرشفة الإشعار، تمت إعادته.</string>
+    <string name="notifications_undo">تراجع</string>
+    <string name="notifications_archive_hint">اسحب لأرشفة الإشعار</string>
+
+    <!-- Settings Enhanced -->
+    <string name="settings_save_success">تم حفظ الإعدادات بنجاح</string>
+    <string name="settings_reset_to_default">تم إعادة تعيين الإعدادات للافتراضي</string>
+    <string name="settings_unsaved_changes">لديك تغييرات غير محفوظة</string>
+    <string name="save_all_changes">حفظ التغييرات</string>
+    <string name="discard_changes">تجاهل</string>
+    <string name="reset_settings">إعادة تعيين الإعدادات</string>
+    <string name="clear_cache">مسح ذاكرة التخزين المؤقت</string>
+    <string name="clear_cache_message">هل أنت متأكد من مسح ذاكرة التخزين المؤقت؟ لن يؤدي هذا إلى حذف بياناتك.</string>
+    <string name="reset_settings_message">هل أنت متأكد من إعادة تعيين كافة الإعدادات إلى قيمها الافتراضية؟</string>
+    <string name="cancel">إلغاء</string>
+    <string name="confirm">تأكيد</string>
+    <string name="appearance_policy_managed_toast">بعض إعدادات المظهر يتم إدارتها بواسطة سياسة النظام.</string>
 </resources>
