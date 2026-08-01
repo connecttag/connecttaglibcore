@@ -109,14 +109,13 @@ fun NotificationsScreen(
 
                             items(visibleNotifications.size, key = { visibleNotifications[it].id }) { index ->
                                 val notification = visibleNotifications[index]
-                                val dismissState = rememberSwipeToDismissBoxState(
-                                    confirmValueChange = { value ->
-                                        if (value == SwipeToDismissBoxValue.EndToStart && notification.isRuntimeInbox) {
-                                            onArchive(notification.id)
-                                        }
-                                        false
-                                    },
-                                )
+                                val dismissState = rememberSwipeToDismissBoxState()
+                                LaunchedEffect(dismissState.targetValue) {
+                                    if (dismissState.targetValue == SwipeToDismissBoxValue.EndToStart && notification.isRuntimeInbox) {
+                                        onArchive(notification.id)
+                                        dismissState.snapTo(SwipeToDismissBoxValue.Settled)
+                                    }
+                                }
                                 SwipeToDismissBox(
                                     state = dismissState,
                                     enableDismissFromStartToEnd = false,

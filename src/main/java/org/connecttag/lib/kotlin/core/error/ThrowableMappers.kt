@@ -56,7 +56,8 @@ private fun Throwable.isNetworkException(): Boolean {
     return name in NETWORK_EXCEPTION_NAMES ||
            name.endsWith("IOException") ||
            name.contains("ConnectException") ||
-           name.contains("HostException")
+           name.contains("HostException") ||
+           name.contains("HttpException")
 }
 
 private fun Throwable.isTimeoutException(): Boolean {

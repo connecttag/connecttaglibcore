@@ -63,12 +63,16 @@ fun BaseWebView(
         },
         update = { webView ->
             // Handle Dark Mode
-            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+                WebSettingsCompat.setAlgorithmicDarkeningAllowed(webView.settings, isDarkMode)
+            } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                @Suppress("DEPRECATION")
                 val forceDark = if (isDarkMode) {
                     WebSettingsCompat.FORCE_DARK_ON
                 } else {
                     WebSettingsCompat.FORCE_DARK_OFF
                 }
+                @Suppress("DEPRECATION")
                 WebSettingsCompat.setForceDark(webView.settings, forceDark)
             }
 
