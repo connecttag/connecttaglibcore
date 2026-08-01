@@ -95,17 +95,17 @@ afterEvaluate {
             }
         }
     }
-}
 
-signing {
-    val signingKey = System.getenv("GPG_PRIVATE_KEY") ?: project.findProperty("signingKey")?.toString()
-    val signingPassword = System.getenv("GPG_PASSPHRASE") ?: project.findProperty("signingPassword")?.toString()
-    
-    if (signingKey != null && signingPassword != null) {
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        sign(publishing.publications["release"])
-    } else if (project.hasProperty("signing.keyId")) {
-        sign(publishing.publications["release"])
+    signing {
+        val signingKey = System.getenv("GPG_PRIVATE_KEY") ?: project.findProperty("signingKey")?.toString()
+        val signingPassword = System.getenv("GPG_PASSPHRASE") ?: project.findProperty("signingPassword")?.toString()
+
+        if (signingKey != null && signingPassword != null) {
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign(publishing.publications["release"])
+        } else if (project.hasProperty("signing.keyId")) {
+            sign(publishing.publications["release"])
+        }
     }
 }
 
