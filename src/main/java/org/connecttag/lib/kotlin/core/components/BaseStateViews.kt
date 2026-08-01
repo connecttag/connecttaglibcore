@@ -112,12 +112,17 @@ fun <T> BaseStateWrapper(
     modifier: Modifier = Modifier,
     loadingMessage: String? = null,
     emptyMessage: String? = null,
+    shimmerContent: @Composable (() -> Unit)? = null,
     content: @Composable (T) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when {
             state.isLoading -> {
-                BaseLoadingView(message = loadingMessage)
+                if (shimmerContent != null) {
+                    shimmerContent()
+                } else {
+                    BaseLoadingView(message = loadingMessage)
+                }
             }
             state.error != null -> {
                 BaseErrorView(

@@ -2,6 +2,8 @@ package org.connecttag.lib.kotlin.core.aboutapp
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import org.connecttag.lib.kotlin.core.R
 import org.connecttag.lib.kotlin.core.settings.SettingsDuotoneIcon
 
@@ -127,20 +130,26 @@ fun ConnectTagInfoScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
 
-            FlowRow(
+            val socialLinks = listOf(
+                R.drawable.ic_telegram to "https://t.me/connecttagye",
+                R.drawable.ic_youtube to "https://www.youtube.com/connecttagye",
+                R.drawable.ic_instagram to "https://www.instagram.com/connecttagye/",
+                R.drawable.ic_facebook to "https://www.facebook.com/connecttagye",
+                R.drawable.ic_x to "https://twitter.com/connecttagye",
+                R.drawable.ic_linkedin to "https://www.linkedin.com/in/connecttagye",
+                R.drawable.ic_website to "https://www.pinterest.com/connecttagye/",
+                R.drawable.ic_playstore to "https://play.google.com/store/apps/dev?id=6507822077747485835",
+                R.drawable.ic_telegram to "https://t.me/ConnectTagApps"
+            )
+
+            LazyRow(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp)
             ) {
-                SocialIcon(R.drawable.ic_telegram, "Telegram") { onUrlClick("https://t.me/connecttagye") }
-                SocialIcon(R.drawable.ic_youtube, "YouTube") { onUrlClick("https://www.youtube.com/connecttagye") }
-                SocialIcon(R.drawable.ic_instagram, "Instagram") { onUrlClick("https://www.instagram.com/connecttagye/") }
-                SocialIcon(R.drawable.ic_facebook, "Facebook") { onUrlClick("https://www.facebook.com/connecttagye") }
-                SocialIcon(R.drawable.ic_x, "X") { onUrlClick("https://twitter.com/connecttagye") }
-                SocialIcon(R.drawable.ic_linkedin, "LinkedIn") { onUrlClick("https://www.linkedin.com/in/connecttagye") }
-                SocialIcon(R.drawable.ic_website, "Pinterest") { onUrlClick("https://www.pinterest.com/connecttagye/") }
-                SocialIcon(R.drawable.ic_playstore, "Play Store") { onUrlClick("https://play.google.com/store/apps/dev?id=6507822077747485835") }
-                SocialIcon(R.drawable.ic_telegram, "Apps Channel") { onUrlClick("https://t.me/ConnectTagApps") }
+                items(socialLinks) { (icon, url) ->
+                    SocialIcon(iconRes = icon, label = "") { onUrlClick(url) }
+                }
             }
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -188,10 +197,10 @@ private fun SocialIcon(
     ) {
         Box(contentAlignment = Alignment.Center) {
             Icon(
-                painter = painterResource(id = iconRes),
+                painter = rememberAsyncImagePainter(model = iconRes),
                 contentDescription = label,
                 modifier = Modifier.size(28.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = Color.Unspecified
             )
         }
     }

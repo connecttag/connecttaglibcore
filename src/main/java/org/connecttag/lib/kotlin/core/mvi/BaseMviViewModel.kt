@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import org.connecttag.lib.kotlin.core.coroutine.DefaultDispatcherProvider
 import org.connecttag.lib.kotlin.core.coroutine.DispatcherProvider
+import org.connecttag.lib.kotlin.core.error.toAppError
 import org.connecttag.lib.kotlin.core.uimodel.PageState
 import org.connecttag.lib.kotlin.core.uimodel.asPageStateFlow
+import timber.log.Timber
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +32,11 @@ abstract class BaseMviViewModel<State : MviState, Action : MviAction, Effect : M
     logger: MviLogger = MviLogger.None,
     errorHandler: MviStoreErrorHandler = MviStoreErrorHandler.None,
 ) : ViewModel(), MviContainer<State, Action, Effect> {
+
+    protected val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.e(throwable, "MVI Action Exception")
+        handleActionException(throwable)
+    }
 
     private val store = MviStore(
         initialState = initialState,
@@ -55,6 +63,13 @@ abstract class BaseMviViewModel<State : MviState, Action : MviAction, Effect : M
         store.onAction(action)
     }
 
+    /**
+     * Override to handle exceptions globally within the MVI loop.
+     */
+    protected open fun handleActionException(throwable: Throwable) {
+        // Can be overridden to update state or send an error effect
+    }
+
     protected fun dispatch(action: Action): Boolean = store.dispatch(action)
 
     protected fun sendEffect(effect: Effect): Boolean = store.emitEffect(effect)
@@ -62,7 +77,7 @@ abstract class BaseMviViewModel<State : MviState, Action : MviAction, Effect : M
     protected fun launch(
         dispatcher: CoroutineDispatcher = dispatchers.main,
         block: suspend () -> Unit,
-    ): Job = viewModelScope.launch(dispatcher) {
+    ): Job = viewModelScope.launch(dispatcher + exceptionHandler) {
         block()
     }
 

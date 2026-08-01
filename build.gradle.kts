@@ -142,6 +142,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation("androidx.webkit:webkit:1.16.0")
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.coil.compose)
     implementation(libs.napier)
     implementation("androidx.work:work-runtime-ktx:2.11.2")
     implementation("com.jakewharton.timber:timber:5.0.1")

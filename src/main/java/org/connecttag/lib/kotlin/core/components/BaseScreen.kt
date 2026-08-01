@@ -7,7 +7,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.connecttag.lib.kotlin.core.R
 import org.connecttag.lib.kotlin.core.utils.ConnectivityObserver
 import org.connecttag.lib.kotlin.core.utils.PageState
@@ -33,8 +38,11 @@ fun <T> BaseScreen(
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable (() -> Unit)? = null,
     onRetry: (() -> Unit)? = null,
+    onRefresh: (() -> Unit)? = null,
+    isRefreshing: Boolean = false,
     loadingMessage: String? = null,
     emptyMessage: String? = null,
+    shimmerContent: @Composable (() -> Unit)? = null,
     floatingActionButton: @Composable (() -> Unit)? = null,
     bottomBar: @Composable (() -> Unit)? = null,
     networkStatus: ConnectivityObserver.Status? = null,
@@ -71,13 +79,31 @@ fun <T> BaseScreen(
                 }
 
                 Box(modifier = Modifier.weight(1f)) {
-                    BaseStateWrapper(
-                        state = state,
-                        onRetry = onRetry,
-                        loadingMessage = loadingMessage,
-                        emptyMessage = emptyMessage,
-                        content = content
-                    )
+                    if (onRefresh != null) {
+                        PullToRefreshBox(
+                            isRefreshing = isRefreshing,
+                            onRefresh = onRefresh,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            BaseStateWrapper(
+                                state = state,
+                                onRetry = onRetry,
+                                loadingMessage = loadingMessage,
+                                emptyMessage = emptyMessage,
+                                shimmerContent = shimmerContent,
+                                content = content
+                            )
+                        }
+                    } else {
+                        BaseStateWrapper(
+                            state = state,
+                            onRetry = onRetry,
+                            loadingMessage = loadingMessage,
+                            emptyMessage = emptyMessage,
+                            shimmerContent = shimmerContent,
+                            content = content
+                        )
+                    }
                 }
             }
         }
