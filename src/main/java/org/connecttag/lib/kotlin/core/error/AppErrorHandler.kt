@@ -22,7 +22,7 @@ object AppErrorHandler {
     fun map(throwable: Throwable): UiState.Error {
         return when (throwable) {
             is UnknownHostException -> UiState.Error(
-                message = UiText.StringResource(R.string.check_internet_connection),
+                message = UiText.StringResource(R.string.no_internet_connection),
                 icon = Icons.Default.CloudOff
             )
             is SocketTimeoutException -> UiState.Error(
@@ -34,7 +34,7 @@ object AppErrorHandler {
                 icon = Icons.Default.ErrorOutline
             )
             else -> UiState.Error(
-                message = UiText.DynamicString(throwable.message ?: "Unknown Error"),
+                message = UiText.StringResource(R.string.error_unknown),
                 icon = Icons.Default.ErrorOutline
             )
         }

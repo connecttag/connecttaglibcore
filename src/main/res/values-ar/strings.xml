@@ -29,6 +29,9 @@
     <string name="invalid_email">عنوان بريد إلكتروني غير صالح</string>
     <string name="invalid_phone">رقم هاتف غير صالح</string>
     <string name="weak_password">كلمة المرور ضعيفة جداً (8 أحرف على الأقل)</string>
+    <string name="error_timeout">انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.</string>
+    <string name="error_io">خطأ في الاتصال. يرجى التحقق من بياناتك.</string>
+    <string name="error_unknown">حدث خطأ غير متوقع.</string>
 
     <!-- Privacy Policy -->
     <string name="privacy_policy_title">الخصوصية والسياسات</string>

@@ -28,6 +28,9 @@
     <string name="invalid_email">Invalid email address</string>
     <string name="invalid_phone">Invalid phone number</string>
     <string name="weak_password">Password is too weak (min 8 chars)</string>
+    <string name="error_timeout">Request timeout. Please try again.</string>
+    <string name="error_io">Communication error. Please check your data.</string>
+    <string name="error_unknown">An unexpected error occurred.</string>
 
     <!-- Privacy Policy -->
     <string name="privacy_policy_title">Privacy and policies</string>
