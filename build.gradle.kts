@@ -1,3 +1,5 @@
+import java.util.Base64
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
@@ -97,11 +99,23 @@ afterEvaluate {
     }
 
     signing {
-        val signingKey = System.getenv("GPG_PRIVATE_KEY") ?: project.findProperty("signingKey")?.toString()
+        val rawSigningKey = System.getenv("GPG_PRIVATE_KEY") ?: project.findProperty("signingKey")?.toString()
         val signingPassword = System.getenv("GPG_PASSPHRASE") ?: project.findProperty("signingPassword")?.toString()
         val signingKeyId = System.getenv("GPG_KEY_ID") ?: project.findProperty("signingKeyId")?.toString()
 
-        if (signingKey != null && signingPassword != null) {
+        if (rawSigningKey != null && signingPassword != null) {
+            // Clean the key: if it's Base64 (doesn't contain PGP header), decode it.
+            // If it contains header, use it as is.
+            val signingKey = if (rawSigningKey.contains("BEGIN PGP")) {
+                rawSigningKey
+            } else {
+                try {
+                    String(Base64.getDecoder().decode(rawSigningKey.trim()), Charsets.UTF_8)
+                } catch (e: Exception) {
+                    rawSigningKey
+                }
+            }
+
             if (signingKeyId != null) {
                 useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
             } else {
