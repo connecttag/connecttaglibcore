@@ -11,7 +11,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -58,7 +58,7 @@ afterEvaluate {
                 pom {
                     name.set("ConnectTag Lib Core")
                     description.set("Core library for ConnectTag Kotlin projects")
-                    url.set("https://github.com/connecttag/connecttag")
+                    url.set("https://github.com/connecttag/connecttaglibcore")
                     licenses {
                         license {
                             name.set("The Apache License, Version 2.0")
@@ -67,15 +67,15 @@ afterEvaluate {
                     }
                     developers {
                         developer {
-                            id.set("developer-id")
+                            id.set("connecttagye")
                             name.set("Connect Tag")
                             email.set("connecttagye@gmail.com")
                         }
                     }
                     scm {
-                        connection.set("scm:git:github.com/connecttag/connecttag.git")
-                        developerConnection.set("scm:git:ssh://github.com/connecttag/connecttag.git")
-                        url.set("https://github.com/connecttag/connecttag/tree/main")
+                        connection.set("scm:git:https://github.com/connecttag/connecttaglibcore.git")
+                        developerConnection.set("scm:git:ssh://git@github.com:connecttag/connecttaglibcore.git")
+                        url.set("https://github.com/connecttag/connecttaglibcore/tree/main")
                     }
                 }
             }
@@ -117,6 +117,7 @@ dependencies {
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

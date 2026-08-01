@@ -1,4 +1,6 @@
-# connecttaglibcore
+# ConnectTag Lib Core
+
+[![JitPack](https://jitpack.io/v/connecttag/connecttaglibcore.svg)](https://jitpack.io/#connecttag/connecttaglibcore)
 
 Core library for ConnectTag Android projects, providing centralized Settings screens, theming capabilities, and "About App" components.
 
