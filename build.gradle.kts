@@ -99,9 +99,14 @@ afterEvaluate {
     signing {
         val signingKey = System.getenv("GPG_PRIVATE_KEY") ?: project.findProperty("signingKey")?.toString()
         val signingPassword = System.getenv("GPG_PASSPHRASE") ?: project.findProperty("signingPassword")?.toString()
+        val signingKeyId = System.getenv("GPG_KEY_ID") ?: project.findProperty("signingKeyId")?.toString()
 
         if (signingKey != null && signingPassword != null) {
-            useInMemoryPgpKeys(signingKey, signingPassword)
+            if (signingKeyId != null) {
+                useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+            } else {
+                useInMemoryPgpKeys(signingKey, signingPassword)
+            }
             sign(publishing.publications["release"])
         } else if (project.hasProperty("signing.keyId")) {
             sign(publishing.publications["release"])
