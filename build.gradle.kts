@@ -81,29 +81,30 @@ afterEvaluate {
             }
         }
         repositories {
-            // Local repository
             maven {
                 name = "Local"
                 url = uri(layout.buildDirectory.dir("repo"))
             }
-            // Online repository example (MavenCentral/Nexus)
-            /*
             maven {
-                name = "Remote"
-                url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                name = "OSSRH"
+                url = uri("https://central.sonatype.com/service/local/staging/deploy/maven2/")
                 credentials {
-                    username = project.findProperty("ossrhUsername")?.toString()
-                    password = project.findProperty("ossrhPassword")?.toString()
+                    username = System.getenv("OSSRH_USERNAME") ?: project.findProperty("ossrhUsername")?.toString()
+                    password = System.getenv("OSSRH_TOKEN") ?: project.findProperty("ossrhPassword")?.toString()
                 }
             }
-            */
         }
     }
 }
 
 signing {
-    // Only sign if we have the properties set up (usually in ~/.gradle/gradle.properties)
-    if (project.hasProperty("signing.keyId")) {
+    val signingKey = System.getenv("GPG_PRIVATE_KEY") ?: project.findProperty("signingKey")?.toString()
+    val signingPassword = System.getenv("GPG_PASSPHRASE") ?: project.findProperty("signingPassword")?.toString()
+    
+    if (signingKey != null && signingPassword != null) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications["release"])
+    } else if (project.hasProperty("signing.keyId")) {
         sign(publishing.publications["release"])
     }
 }
