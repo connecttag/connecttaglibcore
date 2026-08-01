@@ -102,7 +102,7 @@ afterEvaluate {
 }
 
 signing {
-    // Only sign if we have the prop erties set up (usually in ~/.gradle/gradle.properties)
+    // Only sign if we have the properties set up (usually in ~/.gradle/gradle.properties)
     if (project.hasProperty("signing.keyId")) {
         sign(publishing.publications["release"])
     }
