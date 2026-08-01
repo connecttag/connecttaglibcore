@@ -58,7 +58,7 @@ afterEvaluate {
                 pom {
                     name.set("ConnectTag Lib Core")
                     description.set("Core library for ConnectTag Kotlin projects")
-                    url.set("https://github.com/connecttagye/connecttag")
+                    url.set("https://github.com/connecttag/connecttag")
                     licenses {
                         license {
                             name.set("The Apache License, Version 2.0")
@@ -68,14 +68,14 @@ afterEvaluate {
                     developers {
                         developer {
                             id.set("developer-id")
-                            name.set("Developer Name")
-                            email.set("dev@example.com")
+                            name.set("Connect Tag")
+                            email.set("connecttagye@gmail.com")
                         }
                     }
                     scm {
-                        connection.set("scm:git:github.com/connecttagye/connecttag.git")
-                        developerConnection.set("scm:git:ssh://github.com/connecttagye/connecttag.git")
-                        url.set("https://github.com/connecttagye/connecttag/tree/main")
+                        connection.set("scm:git:github.com/connecttag/connecttag.git")
+                        developerConnection.set("scm:git:ssh://github.com/connecttag/connecttag.git")
+                        url.set("https://github.com/connecttag/connecttag/tree/main")
                     }
                 }
             }
