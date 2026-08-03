@@ -141,4 +141,11 @@
     <string name="permission_settings_title">Settings Required</string>
     <string name="permission_settings_description">This permission was permanently denied. Please enable it in the system settings to continue.</string>
     <string name="permission_settings_open">Open Settings</string>
+    <string name="about_developer_title">About Developer</string>
+    <string name="developer_website">Official Website</string>
+    <string name="developer_email">Email Address</string>
+    <string name="code_repositories">Our Code Repositories</string>
+    <string name="contact_developer">Connect With Us</string>
+    <string name="developer_name_full">ConnectTag for Technical Services and Digital Marketing</string>
+    <string name="developer_description_full">We provide integrated technical solutions, distinguished technical supplies, and innovative digital marketing services.</string>
 </resources>

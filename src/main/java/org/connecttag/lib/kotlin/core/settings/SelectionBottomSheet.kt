@@ -112,6 +112,7 @@ fun SelectionBottomSheet(
     selectedValue: String,
     onValueChange: (String) -> Unit,
     onDismiss: () -> Unit,
+    itemPreview: @Composable ((SelectionOption) -> Unit)? = null,
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -168,6 +169,7 @@ fun SelectionBottomSheet(
                                     icon = option.icon,
                                     selected = selected,
                                     onClick = { onValueChange(option.value) },
+                                    preview = if (itemPreview != null) { { itemPreview(option) } } else null
                                 )
                             } else {
                                 Spacer(modifier = Modifier.weight(1f))

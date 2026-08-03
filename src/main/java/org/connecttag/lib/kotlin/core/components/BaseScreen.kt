@@ -22,21 +22,34 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.connecttag.lib.kotlin.core.R
-import org.connecttag.lib.kotlin.core.utils.ConnectivityObserver
-import org.connecttag.lib.kotlin.core.utils.PageState
+import org.connecttag.lib.kotlin.core.network.connectivity.ConnectivityMonitor
+import org.connecttag.lib.kotlin.core.update.AppStatusManager
+import org.connecttag.lib.kotlin.core.uimodel.PageState
+import org.connecttag.lib.kotlin.core.utils.logDebug
 
 /**
- * A standard screen layout that integrates Scaffold, TopBar, and State handling.
+ * A standard screen layout that integrates Scaffold, TopBar, State handling,
+ * and automatic App Status / Connectivity monitoring.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> BaseScreen(
     title: String,
     state: PageState<T>,
+    appStatusManager: AppStatusManager? = null,
+    connectivityMonitor: ConnectivityMonitor? = null,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable (() -> Unit)? = null,
+    topBar: @Composable () -> Unit = {
+        BaseTopAppBar(
+            title = title,
+            subtitle = subtitle,
+            navigationIcon = navigationIcon,
+            actions = { actions?.invoke() }
+        )
+    },
     onRetry: (() -> Unit)? = null,
     onRefresh: (() -> Unit)? = null,
     isRefreshing: Boolean = false,
@@ -45,56 +58,91 @@ fun <T> BaseScreen(
     shimmerContent: @Composable (() -> Unit)? = null,
     floatingActionButton: @Composable (() -> Unit)? = null,
     bottomBar: @Composable (() -> Unit)? = null,
-    networkStatus: ConnectivityObserver.Status? = null,
+    content: @Composable (T) -> Unit
+) {
+    if (appStatusManager != null && connectivityMonitor != null) {
+        AppConnectTagScreen(
+            appStatusManager = appStatusManager,
+            connectivityMonitor = connectivityMonitor
+        ) { isConnected, appStatus ->
+            BaseScreenContent(
+                title = title,
+                state = state,
+                modifier = modifier,
+                subtitle = subtitle,
+                navigationIcon = navigationIcon,
+                actions = actions,
+                topBar = topBar,
+                onRetry = onRetry,
+                onRefresh = onRefresh,
+                isRefreshing = isRefreshing,
+                loadingMessage = loadingMessage,
+                emptyMessage = emptyMessage,
+                shimmerContent = shimmerContent,
+                floatingActionButton = floatingActionButton,
+                bottomBar = bottomBar,
+                content = content
+            )
+        }
+    } else {
+        BaseScreenContent(
+            title = title,
+            state = state,
+            modifier = modifier,
+            subtitle = subtitle,
+            navigationIcon = navigationIcon,
+            actions = actions,
+            topBar = topBar,
+            onRetry = onRetry,
+            onRefresh = onRefresh,
+            isRefreshing = isRefreshing,
+            loadingMessage = loadingMessage,
+            emptyMessage = emptyMessage,
+            shimmerContent = shimmerContent,
+            floatingActionButton = floatingActionButton,
+            bottomBar = bottomBar,
+            content = content
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun <T> BaseScreenContent(
+    title: String,
+    state: PageState<T>,
+    modifier: Modifier = Modifier,
+    subtitle: String? = null,
+    navigationIcon: @Composable (() -> Unit)? = null,
+    actions: @Composable (() -> Unit)? = null,
+    topBar: @Composable () -> Unit,
+    onRetry: (() -> Unit)? = null,
+    onRefresh: (() -> Unit)? = null,
+    isRefreshing: Boolean = false,
+    loadingMessage: String? = null,
+    emptyMessage: String? = null,
+    shimmerContent: @Composable (() -> Unit)? = null,
+    floatingActionButton: @Composable (() -> Unit)? = null,
+    bottomBar: @Composable (() -> Unit)? = null,
     content: @Composable (T) -> Unit
 ) {
     BaseScaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = {
-            BaseTopAppBar(
-                title = title,
-                subtitle = subtitle,
-                navigationIcon = navigationIcon,
-                actions = { actions?.invoke() }
-            )
-        },
+        topBar = topBar,
         floatingActionButton = floatingActionButton,
         bottomBar = bottomBar,
         content = { padding ->
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                // Connectivity Warning Banner
-                val isOffline = networkStatus != null && 
-                    (networkStatus == ConnectivityObserver.Status.Lost || networkStatus == ConnectivityObserver.Status.Unavailable)
-                
-                AnimatedVisibility(
-                    visible = isOffline,
-                    enter = expandVertically(),
-                    exit = shrinkVertically()
-                ) {
-                    ConnectivityWarningBanner()
-                }
-
-                Box(modifier = Modifier.weight(1f)) {
-                    if (onRefresh != null) {
-                        PullToRefreshBox(
-                            isRefreshing = isRefreshing,
-                            onRefresh = onRefresh,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            BaseStateWrapper(
-                                state = state,
-                                onRetry = onRetry,
-                                loadingMessage = loadingMessage,
-                                emptyMessage = emptyMessage,
-                                shimmerContent = shimmerContent,
-                                content = content
-                            )
-                        }
-                    } else {
+                if (onRefresh != null) {
+                    PullToRefreshBox(
+                        isRefreshing = isRefreshing,
+                        onRefresh = onRefresh,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
                         BaseStateWrapper(
                             state = state,
                             onRetry = onRetry,
@@ -104,6 +152,15 @@ fun <T> BaseScreen(
                             content = content
                         )
                     }
+                } else {
+                    BaseStateWrapper(
+                        state = state,
+                        onRetry = onRetry,
+                        loadingMessage = loadingMessage,
+                        emptyMessage = emptyMessage,
+                        shimmerContent = shimmerContent,
+                        content = content
+                    )
                 }
             }
         }
@@ -111,7 +168,7 @@ fun <T> BaseScreen(
 }
 
 @Composable
-private fun ConnectivityWarningBanner() {
+internal fun ConnectivityWarningBanner() {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.errorContainer,

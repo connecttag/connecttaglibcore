@@ -12,6 +12,9 @@ napier = "2.7.1"
 datastore = "1.2.1"
 lifecycle = "2.11.0"
 webkit = "1.16.0"
+browser = "1.10.0"
+security = "1.1.0"
+retrofit = "3.0.0"
 work = "2.11.2"
 timber = "5.0.1"
 
@@ -30,6 +33,9 @@ androidx-foundation-android = { group = "androidx.compose.foundation", name = "f
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
+androidx-security = { group = "androidx.security", name = "security-crypto", version.ref = "security" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 work-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }

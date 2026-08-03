@@ -13,4 +13,29 @@ sealed class UiState<out T> {
         val icon: ImageVector? = null,
         val actionText: UiText? = null
     ) : UiState<Nothing>()
+
+    fun getOrNull(): T? = (this as? Success)?.data
+}
+
+/**
+ * Extension function to convert UiState to PageState for BaseScreen integration.
+ */
+fun <T> UiState<T>.toPageState(): PageState<T> {
+    return when (this) {
+        is UiState.Loading -> PageState.loading()
+        is UiState.Success -> PageState.success(this.data)
+        is UiState.Error -> PageState.error(this.message)
+    }
+}
+
+/**
+ * Extension function to convert UiState to PageState with a custom data object.
+ * Useful when the screen state contains more than just the result of the UiState.
+ */
+fun <T, R> UiState<T>.toPageState(data: R): PageState<R> {
+    return when (this) {
+        is UiState.Loading -> PageState.loading()
+        is UiState.Success -> PageState.success(data)
+        is UiState.Error -> PageState.error(this.message)
+    }
 }

@@ -139,9 +139,12 @@ dependencies {
     implementation(libs.androidx.appcompat)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation("androidx.security:security-crypto:1.1.0")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation("androidx.webkit:webkit:1.16.0")
+    implementation("androidx.browser:browser:1.10.0")
+    implementation(libs.retrofit)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
     implementation(libs.napier)

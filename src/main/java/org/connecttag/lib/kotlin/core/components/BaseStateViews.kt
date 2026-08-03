@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.connecttag.lib.kotlin.core.utils.PageState
+import org.connecttag.lib.kotlin.core.uimodel.PageState
 
 /**
  * A standard loading state view.
@@ -126,7 +126,7 @@ fun <T> BaseStateWrapper(
             }
             state.error != null -> {
                 BaseErrorView(
-                    message = state.error.message ?: "An unexpected error occurred",
+                    message = state.error.asString(),
                     onRetry = onRetry
                 )
             }

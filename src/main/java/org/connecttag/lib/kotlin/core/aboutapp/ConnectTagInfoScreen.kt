@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,7 +37,7 @@ fun ConnectTagInfoScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("عن المطور") },
+                title = { Text(stringResource(R.string.about_developer_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -63,7 +64,7 @@ fun ConnectTagInfoScreen(
             Spacer(modifier = Modifier.height(16.dp))
             
             Text(
-                text = "كونكت تاق للخدمات والمستلزمات التقنية والتسويق الرقمي",
+                text = stringResource(R.string.developer_name_full),
                 style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
@@ -72,7 +73,7 @@ fun ConnectTagInfoScreen(
             Spacer(modifier = Modifier.height(8.dp))
             
             Text(
-                text = "نقدم حلولاً تقنية متكاملة ومستلزمات فنية متميزة بالإضافة إلى خدمات التسويق الرقمي المبتكرة.",
+                text = stringResource(R.string.developer_description_full),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -83,14 +84,14 @@ fun ConnectTagInfoScreen(
             // Website Section
             InfoRow(
                 icon = Icons.Default.Language,
-                label = "موقعنا الالكتروني",
+                label = stringResource(R.string.developer_website),
                 value = "connecttag.org",
                 onClick = { onUrlClick("https://connecttag.org") }
             )
 
             InfoRow(
                 icon = Icons.Default.Email,
-                label = "البريد الإلكتروني",
+                label = stringResource(R.string.developer_email),
                 value = "info@connecttag.org",
                 onClick = { onUrlClick("mailto:info@connecttag.org") }
             )
@@ -98,7 +99,7 @@ fun ConnectTagInfoScreen(
             Spacer(modifier = Modifier.height(24.dp))
             
             Text(
-                text = "حساباتنا على مستودعات الأكواد",
+                text = stringResource(R.string.code_repositories),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth(),
@@ -121,7 +122,7 @@ fun ConnectTagInfoScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "تواصل معنا",
+                text = stringResource(R.string.contact_developer),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth(),

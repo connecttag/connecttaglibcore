@@ -1,12 +1,19 @@
 package org.connecttag.lib.kotlin.core.theme.engine
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import org.connecttag.lib.kotlin.core.theme.ThemeMode
 import org.connecttag.lib.kotlin.core.theme.ThemeSettings
 import org.connecttag.lib.kotlin.core.theme.branding.BrandColors
@@ -21,6 +28,7 @@ fun ConnectTagTheme(
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     },
     dynamicColor: Boolean = ThemeSettings.isDynamicColorEnabled,
+    typography: Typography = MaterialTheme.typography,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
@@ -43,8 +51,28 @@ fun ConnectTagTheme(
     val spacing = ThemeSpacing()
     val effects = ThemeEffects()
 
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = context.findActivity()?.window
+            if (window != null) {
+                window.statusBarColor = Color.Transparent.toArgb()
+                window.navigationBarColor = Color.Transparent.toArgb()
+                
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    window.isNavigationBarContrastEnforced = false
+                }
+                
+                val controller = WindowCompat.getInsetsController(window, view)
+                controller.isAppearanceLightStatusBars = !darkTheme
+                controller.isAppearanceLightNavigationBars = !darkTheme
+            }
+        }
+    }
+
     MaterialTheme(
         colorScheme = colorScheme,
+        typography = typography,
         content = {
             CompositionLocalProvider(
                 LocalAppBrand provides brand,
@@ -58,6 +86,12 @@ fun ConnectTagTheme(
             )
         }
     )
+}
+
+private fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 /**
