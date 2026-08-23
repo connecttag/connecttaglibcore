@@ -85,7 +85,7 @@ fun ConnectTagInfoScreen(
             InfoRow(
                 icon = Icons.Default.Language,
                 label = stringResource(R.string.developer_website),
-                value = "connecttag.org",
+                value = "www.connecttag.org",
                 onClick = { onUrlClick("https://connecttag.org") }
             )
 

@@ -17,14 +17,62 @@ object ExternalAppUtils {
      */
     fun openBrowser(context: Context, url: String) {
         if (url.isBlank()) return
+        val formattedUrl = if (!url.contains("://")) "https://$url" else url
         try {
-            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+            val intent = Intent(Intent.ACTION_VIEW, formattedUrl.toUri())
             if (context !is Activity) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(intent)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    /**
+     * Intelligent social link opener.
+     */
+    fun openSocialLink(context: Context, type: String, value: String) {
+        if (value.isBlank()) return
+
+        when (type.uppercase()) {
+            "FACEBOOK" -> {
+                val webUrl = if (value.contains("facebook.com")) value else "https://facebook.com/$value"
+                val id = value.substringAfterLast("/").trim('/').substringBefore("?")
+                openFacebook(context, id, webUrl)
+            }
+            "TELEGRAM" -> {
+                val username = value.substringAfterLast("/").trim('/').removePrefix("@")
+                openTelegram(context, username)
+            }
+            "WHATSAPP" -> {
+                val number = value.replace(Regex("[^0-9]"), "")
+                openWhatsApp(context, number)
+            }
+            "INSTAGRAM" -> {
+                val username = value.substringAfterLast("/").trim('/')
+                val url = "https://instagram.com/_u/$username"
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                    intent.setPackage("com.instagram.android")
+                    if (context !is Activity) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    openBrowser(context, "https://instagram.com/$username")
+                }
+            }
+            "X", "TWITTER" -> {
+                val username = value.substringAfterLast("/").trim('/').removePrefix("@")
+                val url = "twitter://user?screen_name=$username"
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                    if (context !is Activity) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    openBrowser(context, "https://x.com/$username")
+                }
+            }
+            else -> openBrowser(context, value)
         }
     }
 
@@ -84,6 +132,13 @@ object ExternalAppUtils {
  */
 fun Context.openBrowser(url: String) {
     ExternalAppUtils.openBrowser(this, url)
+}
+
+/**
+ * Extension to open a social link.
+ */
+fun Context.openSocialLink(type: String, value: String) {
+    ExternalAppUtils.openSocialLink(this, type, value)
 }
 
 /**
