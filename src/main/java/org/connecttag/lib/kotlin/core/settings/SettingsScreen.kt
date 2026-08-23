@@ -59,7 +59,13 @@ fun SettingsScreen(
                             onEvent(SettingsUiEvent.ChoiceClicked(item))
                         },
                         onClick = { key ->
-                            // Handle other clicks if needed
+                            section.items.find { it.key == key }?.let { item ->
+                                when (item) {
+                                    is SettingItem.Clickable -> item.onClick()
+                                    is SettingItem.Action -> item.onClick()
+                                    else -> {}
+                                }
+                            }
                         }
                     )
                 }
