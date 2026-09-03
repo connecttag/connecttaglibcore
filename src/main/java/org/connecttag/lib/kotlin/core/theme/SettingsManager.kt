@@ -18,7 +18,7 @@ class SettingsManager(private val context: Context) {
     private val BRAND_ID_KEY = stringPreferencesKey("brand_id")
 
     val themeModeFlow: Flow<ThemeMode> = context.dataStore.data.map { preferences ->
-        val mode = preferences[THEME_MODE_KEY] ?: ThemeMode.SYSTEM.name
+        val mode = preferences[THEME_MODE_KEY] ?: ThemeMode.LIGHT.name
         ThemeMode.valueOf(mode)
     }
 

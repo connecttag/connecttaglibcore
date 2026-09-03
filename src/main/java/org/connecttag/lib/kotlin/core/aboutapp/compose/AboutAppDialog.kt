@@ -446,7 +446,7 @@ private fun RepositoryRow(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun SocialLinksRow(
     socialLinks: List<AboutAppSocialLink>,
@@ -505,20 +505,21 @@ private fun DefaultSocialIcon(
     }
 }
 
-private fun resolveSocialIconResource(iconKey: String?): Int? {
+internal fun resolveSocialIconResource(iconKey: String?): Int? {
     return when (iconKey?.lowercase()) {
-        "facebook" -> R.drawable.ic_facebook
-        "whatsapp", "whatsappchannel", "whatsappgroup" -> R.drawable.ic_whatsapp
-        "instagram" -> R.drawable.ic_instagram
-        "telegram" -> R.drawable.ic_telegram
-        "x", "twitter" -> R.drawable.ic_x
-        "mail", "gmail", "email" -> R.drawable.ic_mail
-        "youtube" -> R.drawable.ic_youtube
-        "linkedin" -> R.drawable.ic_linkedin
-        "tiktok" -> R.drawable.ic_tiktok
-        "threads" -> R.drawable.ic_threads
-        "googleplay", "playstore", "play" -> R.drawable.ic_google_play
-        "pinterest", "github", "gitlab" -> R.drawable.ic_website
+        "facebook" -> R.drawable.facebook
+        "whatsapp", "whatsappchannel", "whatsappgroup" -> R.drawable.whatsapp
+        "instagram" -> R.drawable.instagram
+        "telegram" -> R.drawable.telegram
+        "x", "twitter" -> R.drawable.x
+        "mail", "gmail", "email" -> R.drawable.mail
+        "youtube" -> R.drawable.youtube
+        "linkedin" -> R.drawable.linkedin
+        "tiktok" -> R.drawable.tiktok
+        "threads" -> R.drawable.threads
+        "googleplay", "playstore", "play" -> R.drawable.google_play
+        "pinterest" -> R.drawable.pinterest
+        "github" -> R.drawable.github
         else -> null
     }
 }

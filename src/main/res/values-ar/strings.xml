@@ -144,9 +144,11 @@
     <string name="permission_settings_open">فتح الإعدادات</string>
     <string name="about_developer_title">عن المطور</string>
     <string name="developer_website">موقعنا الالكتروني</string>
-    <string name="developer_email">البريد الإلكتروني</string>
+    <string name="developer_email">البريد </string>
+    <string name="app_email">البريد</string>
     <string name="code_repositories">حساباتنا على مستودعات الأكواد</string>
     <string name="contact_developer">تواصل معنا</string>
-    <string name="developer_name_full">كونكت تاق للخدمات والمستلزمات التقنية والتسويق الرقمي</string>
-    <string name="developer_description_full">نقدم حلولاً تقنية متكاملة ومستلزمات فنية متميزة بالإضافة إلى خدمات التسويق الرقمي المبتكرة.</string>
+    <string name="developer_name_full">كونكت تاق - Connect Tag</string>
+    <string name="developer_description_full">للخدمات والمستلزمات التقنية والتسويق الرقمي</string>
+    <string name="Download_Our_Apps">تحميل تطبيقاتنا</string>
 </resources>

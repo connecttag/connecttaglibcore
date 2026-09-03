@@ -22,32 +22,34 @@ import org.connecttag.lib.kotlin.core.theme.branding.AppBrand
 @Composable
 fun ConnectTagTheme(
     brand: AppBrand = ThemeSettings.selectedBrand,
-    darkTheme: Boolean = when (ThemeSettings.themeMode) {
-        ThemeMode.LIGHT -> false
-        ThemeMode.DARK -> true
-        ThemeMode.SYSTEM -> isSystemInDarkTheme()
-    },
+    darkTheme: Boolean? = null,
     dynamicColor: Boolean = ThemeSettings.isDynamicColorEnabled,
     typography: Typography = MaterialTheme.typography,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
+    
+    val isDark = darkTheme ?: when (ThemeSettings.themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+    }
 
     // Seed color logic: Custom Seed > Brand Primary
     val seedColor = ThemeSettings.customSeedColor ?: brand.colors.primary
 
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ThemeSettings.customSeedColor == null -> {
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
         else -> {
             // Generate full scheme from seed if dynamic is off or custom seed is set
-            BrandColors.fromSeed(seedColor, darkTheme).toColorScheme(darkTheme)
+            BrandColors.fromSeed(seedColor, isDark).toColorScheme(isDark)
         }
     }
 
     val semanticColors = ThemeSemanticColors.fromColorScheme(colorScheme)
-    val gradients = ThemeGradients.fromSeed(colorScheme.primary, darkTheme)
+    val gradients = ThemeGradients.fromSeed(colorScheme.primary, isDark)
     val spacing = ThemeSpacing()
     val effects = ThemeEffects()
 
@@ -64,8 +66,8 @@ fun ConnectTagTheme(
                 }
                 
                 val controller = WindowCompat.getInsetsController(window, view)
-                controller.isAppearanceLightStatusBars = !darkTheme
-                controller.isAppearanceLightNavigationBars = !darkTheme
+                controller.isAppearanceLightStatusBars = !isDark
+                controller.isAppearanceLightNavigationBars = !isDark
             }
         }
     }

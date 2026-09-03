@@ -13,34 +13,44 @@ import org.connecttag.lib.kotlin.core.R
 fun supportSettingsSection(
     onOpenAboutApp: () -> Unit,
     onOpenAboutDeveloper: () -> Unit,
-    onOpenPrivacyPolicy: () -> Unit,
+    onOpenPrivacyPolicy: (() -> Unit)? = null,
 ): SettingSection {
-    return SettingSection(
-        title = stringResource(R.string.support_settings_title),
-        description = stringResource(R.string.support_settings_desc),
-        icon = Icons.AutoMirrored.Outlined.HelpOutline,
-        items = listOf(
+    val items = buildList {
+        add(
             SettingItem.Action(
                 key = "about_app",
                 title = stringResource(R.string.support_about_app_title),
                 summary = stringResource(R.string.support_about_app_desc),
                 icon = Icons.Outlined.Info,
                 onClick = onOpenAboutApp
-            ),
+            )
+        )
+        add(
             SettingItem.Action(
                 key = "about_developer",
                 title = stringResource(R.string.support_about_developer_title),
                 summary = stringResource(R.string.support_about_developer_desc),
                 icon = Icons.Outlined.Person,
                 onClick = onOpenAboutDeveloper
-            ),
-            SettingItem.Action(
-                key = "privacy_policy",
-                title = stringResource(R.string.support_privacy_policy_title),
-                summary = stringResource(R.string.support_privacy_policy_desc),
-                icon = Icons.Outlined.PrivacyTip,
-                onClick = onOpenPrivacyPolicy
             )
         )
+        onOpenPrivacyPolicy?.let {
+            add(
+                SettingItem.Action(
+                    key = "privacy_policy",
+                    title = stringResource(R.string.support_privacy_policy_title),
+                    summary = stringResource(R.string.support_privacy_policy_desc),
+                    icon = Icons.Outlined.PrivacyTip,
+                    onClick = it
+                )
+            )
+        }
+    }
+
+    return SettingSection(
+        title = stringResource(R.string.support_settings_title),
+        description = stringResource(R.string.support_settings_desc),
+        icon = Icons.AutoMirrored.Outlined.HelpOutline,
+        items = items
     )
 }

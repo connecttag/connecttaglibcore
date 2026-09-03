@@ -1,6 +1,8 @@
 package org.connecttag.lib.kotlin.core.aboutapp
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -18,12 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import org.connecttag.lib.kotlin.core.R
 import org.connecttag.lib.kotlin.core.settings.SettingsDuotoneIcon
@@ -37,7 +41,7 @@ fun ConnectTagInfoScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(stringResource(R.string.about_developer_title)) },
+                title = { /* Empty title to avoid redundancy with content */ },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -51,15 +55,21 @@ fun ConnectTagInfoScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(24.dp),
+                .padding(horizontal = 24.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SettingsDuotoneIcon(
-                imageVector = Icons.Default.Business,
-                contentDescription = null,
-                containerSize = 100.dp,
-                iconSize = 50.dp
-            )
+            Surface(
+                modifier = Modifier.size(100.dp),
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+            ) {
+                AsyncImage(
+                    model = R.drawable.connect_tag_logo,
+                    contentDescription = null,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
             
             Spacer(modifier = Modifier.height(16.dp))
             
@@ -85,7 +95,7 @@ fun ConnectTagInfoScreen(
             InfoRow(
                 icon = Icons.Default.Language,
                 label = stringResource(R.string.developer_website),
-                value = "www.connecttag.org",
+                value = "connecttag.org",
                 onClick = { onUrlClick("https://connecttag.org") }
             )
 
@@ -97,7 +107,7 @@ fun ConnectTagInfoScreen(
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             Text(
                 text = stringResource(R.string.code_repositories),
                 style = MaterialTheme.typography.titleMedium,
@@ -105,19 +115,22 @@ fun ConnectTagInfoScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            InfoRow(
-                icon = Icons.Default.Link,
-                label = "GitHub",
-                value = "github.com/connecttagye",
-                onClick = { onUrlClick("https://github.com/connecttagye") }
+
+            val repoLinks = listOf(
+                R.drawable.github to "https://github.com/connecttagye",
+                R.drawable.gitlab to "https://gitlab.com/connecttagye"
             )
-            InfoRow(
-                icon = Icons.Default.Link,
-                label = "GitLab",
-                value = "gitlab.com/connecttagye",
-                onClick = { onUrlClick("https://gitlab.com/connecttagye") }
-            )
+
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
+            ) {
+                items(repoLinks) { (icon, url) ->
+                    SocialIcon(iconRes = icon, label = "") { onUrlClick(url) }
+                }
+            }
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -132,15 +145,19 @@ fun ConnectTagInfoScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             val socialLinks = listOf(
-                R.drawable.ic_telegram to "https://t.me/connecttagye",
-                R.drawable.ic_youtube to "https://www.youtube.com/connecttagye",
-                R.drawable.ic_instagram to "https://www.instagram.com/connecttagye/",
-                R.drawable.ic_facebook to "https://www.facebook.com/connecttagye",
-                R.drawable.ic_x to "https://twitter.com/connecttagye",
-                R.drawable.ic_linkedin to "https://www.linkedin.com/in/connecttagye",
-                R.drawable.ic_website to "https://www.pinterest.com/connecttagye/",
-                R.drawable.ic_playstore to "https://play.google.com/store/apps/dev?id=6507822077747485835",
-                R.drawable.ic_telegram to "https://t.me/ConnectTagApps"
+                R.drawable.facebook to "https://www.facebook.com/connecttagye",
+                R.drawable.telegram to "https://t.me/connecttagye",
+                R.drawable.whatsapp to "https://whatsapp.com/channel/0029VaasCef8qIztDeS8Sp1R",
+                R.drawable.x to "https://x.com/connecttagye",
+                R.drawable.linkedin to "https://www.linkedin.com/in/connecttagye",
+                R.drawable.instagram to "https://www.instagram.com/connecttagye",
+                R.drawable.threads to "https://www.threads.net/@connecttagye",
+                R.drawable.snapchat to "https://www.snapchat.com/add/connecttagye",
+                R.drawable.tiktok to "https://www.tiktok.com/@connecttagye",
+                R.drawable.youtube to "https://www.youtube.com/@connecttagye",
+                R.drawable.kik to "http://kik.me/connecttagye",
+                R.drawable.pinterest to "https://www.pinterest.com/connecttagye",
+                R.drawable.reddit to "https://www.reddit.com/user/connecttagye",
             )
 
             LazyRow(
@@ -149,6 +166,31 @@ fun ConnectTagInfoScreen(
                 contentPadding = PaddingValues(horizontal = 4.dp)
             ) {
                 items(socialLinks) { (icon, url) ->
+                    SocialIcon(iconRes = icon, label = "") { onUrlClick(url) }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = stringResource(R.string.Download_Our_Apps),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+
+            val appLinks = listOf(
+                R.drawable.telegram to "https://t.me/ConnectTagApps",
+                R.drawable.google_play to "https://play.google.com/store/apps/dev?id=6507822077747485835"
+            )
+
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
+            ) {
+                items(appLinks) { (icon, url) ->
                     SocialIcon(iconRes = icon, label = "") { onUrlClick(url) }
                 }
             }
@@ -188,20 +230,22 @@ private fun InfoRow(
 private fun SocialIcon(
     iconRes: Int,
     label: String,
+    tint: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit
 ) {
     Surface(
         onClick = onClick,
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+        color = tint.copy(alpha = 0.1f),
+        border = BorderStroke(1.dp, tint.copy(alpha = 0.2f)),
         modifier = Modifier.size(56.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Icon(
-                painter = rememberAsyncImagePainter(model = iconRes),
+            AsyncImage(
+                model = iconRes,
                 contentDescription = label,
                 modifier = Modifier.size(28.dp),
-                tint = Color.Unspecified
+                colorFilter = if (tint != Color.Unspecified) ColorFilter.tint(tint) else null
             )
         }
     }

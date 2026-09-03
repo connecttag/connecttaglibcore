@@ -53,7 +53,7 @@ object ThemeSettings {
             }
         }
 
-    private var _themeMode by mutableStateOf(ThemeMode.SYSTEM)
+    private var _themeMode by mutableStateOf(ThemeMode.LIGHT)
     var themeMode: ThemeMode
         get() = _themeMode
         set(value) {
@@ -125,7 +125,7 @@ object ThemeSettings {
             val savedLanguage = manager.languageFlow.first()
             val savedBrandId = manager.brandIdFlow.first()
 
-            _themeMode = savedMode
+            _themeMode = if (savedMode == ThemeMode.SYSTEM) ThemeMode.LIGHT else savedMode
             _isDynamicColorEnabled = savedDynamic
             _appLanguage = savedLanguage
             _customSeedColor = savedColorLong?.let { Color(it.toInt()) }
@@ -140,7 +140,7 @@ object ThemeSettings {
         scope.launch {
             settingsManager?.clearAllSettings()
             // Reset local states to default values immediately
-            _themeMode = ThemeMode.SYSTEM
+            _themeMode = ThemeMode.LIGHT
             _appLanguage = AppLanguage.SYSTEM
             _isDynamicColorEnabled = true
             _customSeedColor = null

@@ -72,6 +72,21 @@ object ExternalAppUtils {
                     openBrowser(context, "https://x.com/$username")
                 }
             }
+            "LINKEDIN" -> {
+                val username = value.substringAfterLast("/").trim('/')
+                openBrowser(context, "https://linkedin.com/in/$username")
+            }
+            "THREADS" -> {
+                val username = value.substringAfterLast("/").trim('/').removePrefix("@")
+                openBrowser(context, "https://threads.net/@$username")
+            }
+            "YOUTUBE" -> {
+                val username = value.substringAfterLast("/").trim('/').removePrefix("@")
+                openBrowser(context, "https://youtube.com/@$username")
+            }
+            "GMAIL", "EMAIL" -> {
+                openBrowser(context, "mailto:$value")
+            }
             else -> openBrowser(context, value)
         }
     }
