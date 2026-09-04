@@ -1,7 +1,6 @@
 package org.connecttag.lib.kotlin.core.settings
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PrivacyTip
@@ -49,8 +48,8 @@ fun supportSettingsSection(
 
     return SettingSection(
         title = stringResource(R.string.support_settings_title),
-        description = stringResource(R.string.support_settings_desc),
-        icon = Icons.AutoMirrored.Outlined.HelpOutline,
+        description = null,
+        icon = Icons.Outlined.Info,
         items = items
     )
 }

@@ -7,11 +7,19 @@
     <string name="english">الإنجليزية</string>
     <string name="arabic">العربية</string>
     <string name="system_default">افتراضي النظام</string>
+    <string name="language_system_desc">اتباع لغة نظام الجهاز تلقائياً</string>
+    <string name="language_arabic_desc">اللغة العربية</string>
+    <string name="language_english_desc">اللغة الإنجليزية (English)</string>
     <string name="appearance">المظهر</string>
     <string name="light">فاتح</string>
     <string name="dark">داكن</string>
     <string name="follow_system_colors">اتباع ألوان خلفية النظام</string>
     <string name="reset_to_defaults">إعادة التعيين للإعدادات الافتراضية</string>
+    <string name="theme_mode">وضع الثيم</string>
+    <string name="theme_system_desc">مزامنة المظهر تلقائياً مع إعدادات نظام الجهاز</string>
+    <string name="theme_light_desc">مظهر نهاري عالي الوضوح</string>
+    <string name="theme_dark_desc">مظهر ليلي مريح للعين وموفر لطاقة البطارية</string>
+    <string name="dynamic_colors_unsupported">تتطلب الألوان الديناميكية نظام أندرويد 12 (API 31) أو أحدث</string>
     <string name="share_app">مشاركة التطبيق</string>
     <string name="contact_support">التواصل مع الدعم</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
@@ -107,11 +115,11 @@
     <string name="onboarding_step_content_description">شاشة تعريفية: %1$s</string>
 
     <!-- About App & Support -->
-    <string name="support_settings_title">الدعم والسياسات</string>
+    <string name="support_settings_title">حول</string>
     <string name="support_settings_desc">موارد وروابط لمساعدتك في استخدام التطبيق.</string>
     <string name="support_about_app_title">حول التطبيق</string>
     <string name="support_about_app_desc">معلومات الإصدار والحقوق.</string>
-    <string name="support_about_developer_title">المطور</string>
+    <string name="support_about_developer_title">حول المطور</string>
     <string name="support_about_developer_desc">تواصل مع منشئي هذا التطبيق.</string>
     <string name="support_privacy_policy_title">سياسة الخصوصية</string>
     <string name="support_privacy_policy_desc">كيفية تعاملنا مع بياناتك.</string>

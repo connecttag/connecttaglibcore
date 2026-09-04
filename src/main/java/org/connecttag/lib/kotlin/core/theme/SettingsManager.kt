@@ -18,8 +18,8 @@ class SettingsManager(private val context: Context) {
     private val BRAND_ID_KEY = stringPreferencesKey("brand_id")
 
     val themeModeFlow: Flow<ThemeMode> = context.dataStore.data.map { preferences ->
-        val mode = preferences[THEME_MODE_KEY] ?: ThemeMode.LIGHT.name
-        ThemeMode.valueOf(mode)
+        val mode = preferences[THEME_MODE_KEY] ?: ThemeMode.SYSTEM.name
+        runCatching { ThemeMode.valueOf(mode) }.getOrDefault(ThemeMode.SYSTEM)
     }
 
     val seedColorFlow: Flow<Long?> = context.dataStore.data.map { preferences ->
@@ -32,7 +32,7 @@ class SettingsManager(private val context: Context) {
 
     val languageFlow: Flow<AppLanguage> = context.dataStore.data.map { preferences ->
         val lang = preferences[LANGUAGE_TAG_KEY] ?: AppLanguage.SYSTEM.name
-        AppLanguage.valueOf(lang)
+        runCatching { AppLanguage.valueOf(lang) }.getOrDefault(AppLanguage.SYSTEM)
     }
 
     val brandIdFlow: Flow<String?> = context.dataStore.data.map { preferences ->

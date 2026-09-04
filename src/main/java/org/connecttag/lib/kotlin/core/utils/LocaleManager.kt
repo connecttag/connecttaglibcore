@@ -21,12 +21,15 @@ fun ConnectTagLocaleProvider(
     val systemLayoutDirection = LocalLayoutDirection.current
 
     LaunchedEffect(language) {
-        val localeList = if (language == AppLanguage.SYSTEM) {
+        val currentLocales = AppCompatDelegate.getApplicationLocales()
+        val targetLocaleList = if (language == AppLanguage.SYSTEM) {
             LocaleListCompat.getEmptyLocaleList()
         } else {
             LocaleListCompat.forLanguageTags(language.value)
         }
-        AppCompatDelegate.setApplicationLocales(localeList)
+        if (currentLocales.toLanguageTags() != targetLocaleList.toLanguageTags()) {
+            AppCompatDelegate.setApplicationLocales(targetLocaleList)
+        }
     }
 
     val layoutDirection = when (language) {

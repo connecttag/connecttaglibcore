@@ -16,7 +16,14 @@ open class SettingsViewModel(
                         } else item
                     })
                 }
-                state.copy(sections = updatedSections, hasUnsavedChanges = true)
+                val targetItem = state.sections.flatMap { it.items }
+                    .filterIsInstance<SettingItem.Toggle>()
+                    .find { it.key == event.key }
+                val isAutoSave = targetItem?.autoSave == true
+                state.copy(
+                    sections = updatedSections,
+                    hasUnsavedChanges = if (isAutoSave) state.hasUnsavedChanges else true
+                )
             }
             is SettingsUiEvent.ChoiceClicked -> state.copy(activeSelection = event.item)
             is SettingsUiEvent.DismissSelection -> state.copy(activeSelection = null)
@@ -28,7 +35,15 @@ open class SettingsViewModel(
                         } else item
                     })
                 }
-                state.copy(sections = updatedSections, hasUnsavedChanges = true, activeSelection = null)
+                val targetItem = state.sections.flatMap { it.items }
+                    .filterIsInstance<SettingItem.Choice>()
+                    .find { it.key == event.key }
+                val isAutoSave = targetItem?.autoSave == true
+                state.copy(
+                    sections = updatedSections,
+                    hasUnsavedChanges = if (isAutoSave) state.hasUnsavedChanges else true,
+                    activeSelection = null
+                )
             }
             SettingsUiEvent.SaveChanges -> state.copy(isSaving = true)
             SettingsUiEvent.DiscardChanges -> state.copy(
@@ -49,6 +64,20 @@ open class SettingsViewModel(
             SettingsUiEvent.ResetToDefaults -> sendEffect(SettingsUiEffect.ShowResetDialog)
             SettingsUiEvent.ClearCache -> sendEffect(SettingsUiEffect.ShowClearCacheDialog)
             SettingsUiEvent.SaveChanges -> save()
+            is SettingsUiEvent.ToggleChanged -> {
+                currentState.sections.flatMap { it.items }
+                    .filterIsInstance<SettingItem.Toggle>()
+                    .find { it.key == action.key }
+                    ?.onCheckedChange?.invoke(action.checked)
+                dispatch(action)
+            }
+            is SettingsUiEvent.ChoiceChanged -> {
+                currentState.sections.flatMap { it.items }
+                    .filterIsInstance<SettingItem.Choice>()
+                    .find { it.key == action.key }
+                    ?.onOptionSelected?.invoke(action.value)
+                dispatch(action)
+            }
             else -> dispatch(action)
         }
     }

@@ -12,6 +12,7 @@ sealed class SettingItem {
     abstract val summary: String?
     abstract val icon: ImageVector?
     abstract val enabled: Boolean
+    open val autoSave: Boolean get() = false
 
     /** A clickable setting that triggers an action or navigation. */
     data class Clickable(
@@ -21,6 +22,7 @@ sealed class SettingItem {
         override val icon: ImageVector? = null,
         val iconTargetState: ImageVector? = null,
         override val enabled: Boolean = true,
+        override val autoSave: Boolean = false,
         val trailingContent: (@Composable () -> Unit)? = null,
         val onClick: () -> Unit
     ) : SettingItem()
@@ -32,6 +34,7 @@ sealed class SettingItem {
         override val summary: String? = null,
         override val icon: ImageVector? = null,
         override val enabled: Boolean = true,
+        override val autoSave: Boolean = false,
         val checked: Boolean,
         val trailingContent: (@Composable () -> Unit)? = null,
         val onCheckedChange: (Boolean) -> Unit
@@ -44,6 +47,7 @@ sealed class SettingItem {
         override val summary: String? = null,
         override val icon: ImageVector? = null,
         override val enabled: Boolean = true,
+        override val autoSave: Boolean = false,
         val selectedOption: String,
         val options: List<SelectionOption>,
         val onOptionSelected: (String) -> Unit

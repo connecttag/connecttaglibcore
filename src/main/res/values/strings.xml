@@ -6,11 +6,19 @@
     <string name="english">English</string>
     <string name="arabic">Arabic</string>
     <string name="system_default">System Default</string>
+    <string name="language_system_desc">Follow system language automatically</string>
+    <string name="language_arabic_desc">Arabic language (العربية)</string>
+    <string name="language_english_desc">English language</string>
     <string name="appearance">Appearance</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="follow_system_colors">Follow system wallpaper colors</string>
     <string name="reset_to_defaults">Reset to Defaults</string>
+    <string name="theme_mode">Theme Mode</string>
+    <string name="theme_system_desc">Follow system dark/light settings automatically</string>
+    <string name="theme_light_desc">Bright appearance suitable for daytime</string>
+    <string name="theme_dark_desc">Dark appearance that saves battery and reduces eye strain</string>
+    <string name="dynamic_colors_unsupported">Dynamic colors require Android 12 (API 31) or newer</string>
     <string name="share_app">Share App</string>
     <string name="contact_support">Contact Support</string>
     <string name="privacy_policy">Privacy Policy</string>
@@ -106,11 +114,11 @@
     <string name="onboarding_step_content_description">Onboarding slide: %1$s</string>
 
     <!-- About App & Support -->
-    <string name="support_settings_title">Support &amp; Policies</string>
+    <string name="support_settings_title">About</string>
     <string name="support_settings_desc">Resources and links to help you use the app.</string>
-    <string name="support_about_app_title">About Application</string>
+    <string name="support_about_app_title">About App</string>
     <string name="support_about_app_desc">Version information and credits.</string>
-    <string name="support_about_developer_title">Developer</string>
+    <string name="support_about_developer_title">About Developer</string>
     <string name="support_about_developer_desc">Contact the creators of this app.</string>
     <string name="support_privacy_policy_title">Privacy Policy</string>
     <string name="support_privacy_policy_desc">How we handle your data.</string>
