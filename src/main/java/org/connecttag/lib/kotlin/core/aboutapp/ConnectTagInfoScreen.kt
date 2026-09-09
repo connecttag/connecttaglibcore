@@ -180,9 +180,11 @@ fun ConnectTagInfoScreen(
                 textAlign = TextAlign.Start
             )
 
+            val browseAppsLabel = stringResource(R.string.browse_our_apps_website)
             val appLinks = listOf(
-                R.drawable.telegram to "https://t.me/ConnectTagApps",
-                R.drawable.google_play to "https://play.google.com/store/apps/dev?id=6507822077747485835"
+                R.drawable.website to "https://connecttag.org/company/projects/apps/",
+                R.drawable.google_play to "https://play.google.com/store/apps/dev?id=6507822077747485835",
+                R.drawable.telegram to "https://t.me/ConnectTagApps"
             )
 
             LazyRow(
@@ -191,7 +193,13 @@ fun ConnectTagInfoScreen(
                 contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
             ) {
                 items(appLinks) { (icon, url) ->
-                    SocialIcon(iconRes = icon, label = "") { onUrlClick(url) }
+                    val label = when (icon) {
+                        R.drawable.website -> browseAppsLabel
+                        R.drawable.google_play -> "Google Play"
+                        R.drawable.telegram -> "Telegram"
+                        else -> ""
+                    }
+                    SocialIcon(iconRes = icon, label = label) { onUrlClick(url) }
                 }
             }
             

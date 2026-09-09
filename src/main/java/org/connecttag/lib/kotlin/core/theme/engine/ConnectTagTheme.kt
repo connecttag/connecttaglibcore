@@ -58,7 +58,9 @@ fun ConnectTagTheme(
         SideEffect {
             val window = context.findActivity()?.window
             if (window != null) {
+                @Suppress("DEPRECATION")
                 window.statusBarColor = Color.Transparent.toArgb()
+                @Suppress("DEPRECATION")
                 window.navigationBarColor = Color.Transparent.toArgb()
                 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -21,9 +22,12 @@ fun BaseTopAppBar(
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable (RowScope.() -> Unit)? = null,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.surface,
+        scrolledContainerColor = Color.Unspecified,
+        navigationIconContentColor = Color.Unspecified,
         titleContentColor = MaterialTheme.colorScheme.onSurface,
+        actionIconContentColor = Color.Unspecified
     ),
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
     loadingProgress: Float? = null
