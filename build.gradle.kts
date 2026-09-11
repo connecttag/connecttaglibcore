@@ -153,6 +153,5 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.11.2")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.accompanist.flowlayout)
     implementation(libs.kotlinx.serialization.json)
 }

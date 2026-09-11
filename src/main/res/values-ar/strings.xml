@@ -9,7 +9,7 @@
     <string name="system_default">افتراضي النظام</string>
     <string name="language_system_desc">اتباع لغة نظام الجهاز تلقائياً</string>
     <string name="language_arabic_desc">اللغة العربية</string>
-    <string name="language_english_desc">اللغة الإنجليزية (English)</string>
+    <string name="language_english_desc">اللغة الإنجليزية</string>
     <string name="appearance">المظهر</string>
     <string name="light">فاتح</string>
     <string name="dark">داكن</string>

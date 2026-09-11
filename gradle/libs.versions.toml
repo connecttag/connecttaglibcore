@@ -17,7 +17,6 @@ material = "1.14.0"
 navigationCompose = "2.9.8"
 compose = "1.5.4"
 foundationAndroid = "1.11.4"
-accompanist = "0.36.0"
 splashscreen = "1.2.0"
 kotlinxSerialization = "1.11.0"
 kotlinxCoroutines = "1.11.0"
@@ -44,7 +43,6 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
-accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
