@@ -24,13 +24,16 @@ import org.connecttag.lib.kotlin.core.theme.ThemeSettings
 fun appearanceSettingsSection(
     themeMode: ThemeMode = ThemeSettings.themeMode,
     isDynamicColor: Boolean = ThemeSettings.isDynamicColorEnabled,
+    selectedPalette: String? = null,
+    paletteOptions: List<SelectionOption>? = null,
     onThemeModeChanged: (ThemeMode) -> Unit = { ThemeSettings.themeMode = it },
     onDynamicColorChanged: (Boolean) -> Unit = { 
         ThemeSettings.isDynamicColorEnabled = it
         if (it) {
             ThemeSettings.customSeedColor = null
         }
-    }
+    },
+    onPaletteChanged: ((String) -> Unit)? = null
 ): SettingSection {
     val themeSummary = when (themeMode) {
         ThemeMode.SYSTEM -> stringResource(R.string.system_default)
@@ -72,35 +75,57 @@ fun appearanceSettingsSection(
         stringResource(R.string.dynamic_colors_unsupported)
     }
 
-    val items = listOf(
-        SettingItem.Choice(
-            key = "theme_mode",
-            title = stringResource(R.string.appearance),
-            summary = themeSummary,
-            icon = themeIcon,
-            enabled = true,
-            autoSave = true,
-            selectedOption = themeMode.name,
-            options = themeOptions,
-            onOptionSelected = { selectedValue ->
-                runCatching { ThemeMode.valueOf(selectedValue) }.getOrNull()?.let { mode ->
-                    onThemeModeChanged(mode)
+    val items = buildList {
+        add(
+            SettingItem.Choice(
+                key = "theme_mode",
+                title = stringResource(R.string.appearance),
+                summary = themeSummary,
+                icon = themeIcon,
+                enabled = true,
+                autoSave = true,
+                selectedOption = themeMode.name,
+                options = themeOptions,
+                onOptionSelected = { selectedValue ->
+                    runCatching { ThemeMode.valueOf(selectedValue) }.getOrNull()?.let { mode ->
+                        onThemeModeChanged(mode)
+                    }
                 }
-            }
-        ),
-        SettingItem.Toggle(
-            key = "dynamic_colors",
-            title = stringResource(R.string.dynamic_colors),
-            summary = dynamicColorSummary,
-            icon = Icons.Rounded.Palette,
-            enabled = isDynamicColorSupported,
-            autoSave = true,
-            checked = isDynamicColor && isDynamicColorSupported,
-            onCheckedChange = { isChecked ->
-                onDynamicColorChanged(isChecked)
-            }
+            )
         )
-    )
+        if (paletteOptions != null && onPaletteChanged != null) {
+            val currentPaletteTitle = paletteOptions.firstOrNull { it.value == selectedPalette }?.title
+            add(
+                SettingItem.Choice(
+                    key = "theme_palette",
+                    title = stringResource(R.string.choose_app_color),
+                    summary = currentPaletteTitle,
+                    icon = Icons.Rounded.Palette,
+                    enabled = true,
+                    autoSave = true,
+                    selectedOption = selectedPalette ?: "",
+                    options = paletteOptions,
+                    onOptionSelected = { selectedValue ->
+                        onPaletteChanged(selectedValue)
+                    }
+                )
+            )
+        }
+        add(
+            SettingItem.Toggle(
+                key = "dynamic_colors",
+                title = stringResource(R.string.dynamic_colors),
+                summary = dynamicColorSummary,
+                icon = Icons.Rounded.Palette,
+                enabled = isDynamicColorSupported,
+                autoSave = true,
+                checked = isDynamicColor && isDynamicColorSupported,
+                onCheckedChange = { isChecked ->
+                    onDynamicColorChanged(isChecked)
+                }
+            )
+        )
+    }
 
     return SettingSection(
         title = stringResource(R.string.appearance),

@@ -19,11 +19,12 @@ fun SettingsScreen(
     uiState: SettingsUiState,
     onEvent: (SettingsUiEvent) -> Unit,
     sheetState: SheetState,
+    title: String = stringResource(R.string.settings),
 ) {
     AkScaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(stringResource(R.string.settings)) },
+                title = { Text(title) },
                 navigationIcon = {
                     IconButton(onClick = { onEvent(SettingsUiEvent.NavigateBack) }) {
                         Icon(
@@ -78,6 +79,7 @@ fun SettingsScreen(
                     icon = choiceItem.icon,
                     options = choiceItem.options,
                     selectedValue = choiceItem.selectedOption,
+                    itemPreview = choiceItem.itemPreview,
                     onValueChange = { newValue ->
                         onEvent(SettingsUiEvent.ChoiceChanged(choiceItem.key, newValue))
                     },

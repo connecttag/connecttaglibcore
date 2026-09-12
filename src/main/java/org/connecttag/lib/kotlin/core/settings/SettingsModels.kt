@@ -1,6 +1,7 @@
 package org.connecttag.lib.kotlin.core.settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
@@ -50,6 +51,7 @@ sealed class SettingItem {
         override val autoSave: Boolean = false,
         val selectedOption: String,
         val options: List<SelectionOption>,
+        val itemPreview: (@Composable (SelectionOption) -> Unit)? = null,
         val onOptionSelected: (String) -> Unit
     ) : SettingItem()
 
@@ -81,7 +83,8 @@ data class SelectionOption(
     val value: String,
     val title: String,
     val icon: ImageVector? = null,
-    val summary: String? = null
+    val summary: String? = null,
+    val color: Color? = null
 )
 
 /**

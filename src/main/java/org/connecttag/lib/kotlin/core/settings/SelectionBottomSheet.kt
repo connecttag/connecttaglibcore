@@ -9,9 +9,14 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -169,7 +174,42 @@ fun SelectionBottomSheet(
                                     icon = option.icon,
                                     selected = selected,
                                     onClick = { onValueChange(option.value) },
-                                    preview = if (itemPreview != null) { { itemPreview(option) } } else null
+                                    preview = if (itemPreview != null) {
+                                        { itemPreview(option) }
+                                    } else if (option.color != null) {
+                                        {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(44.dp)
+                                                    .background(
+                                                        color = option.color,
+                                                        shape = CircleShape
+                                                    )
+                                                    .border(
+                                                        width = if (selected) 2.5.dp else 1.5.dp,
+                                                        color = if (selected) MaterialTheme.colorScheme.primary else Color.White.copy(alpha = 0.5f),
+                                                        shape = CircleShape
+                                                    ),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                if (selected) {
+                                                    Icon(
+                                                        imageVector = Icons.Rounded.Check,
+                                                        contentDescription = null,
+                                                        tint = Color.White,
+                                                        modifier = Modifier.size(22.dp)
+                                                    )
+                                                } else if (option.icon != null) {
+                                                    Icon(
+                                                        imageVector = option.icon,
+                                                        contentDescription = null,
+                                                        tint = Color.White.copy(alpha = 0.85f),
+                                                        modifier = Modifier.size(20.dp)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    } else null
                                 )
                             } else {
                                 Spacer(modifier = Modifier.weight(1f))
