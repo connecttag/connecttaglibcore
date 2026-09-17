@@ -58,6 +58,7 @@ fun ConnectTagTheme(
         SideEffect {
             val window = context.findActivity()?.window
             if (window != null) {
+                WindowCompat.setDecorFitsSystemWindows(window, false)
                 @Suppress("DEPRECATION")
                 window.statusBarColor = Color.Transparent.toArgb()
                 @Suppress("DEPRECATION")

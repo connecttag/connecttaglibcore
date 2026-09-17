@@ -1,6 +1,7 @@
 package org.connecttag.lib.kotlin.core.theme
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import org.connecttag.lib.kotlin.core.theme.engine.ThemeMotion
 import org.connecttag.lib.kotlin.core.theme.branding.AppBrand
 import org.connecttag.lib.kotlin.core.theme.branding.ConnectTagBrand
@@ -59,6 +60,7 @@ object ThemeSettings {
         set(value) {
             if (_themeMode == value) return
             _themeMode = value
+            applyNightMode(value)
             scope.launch {
                 settingsManager?.setThemeMode(value)
             }
@@ -133,6 +135,18 @@ object ThemeSettings {
             savedBrandId?.let { id ->
                 availableBrands[id]?.let { _selectedBrand = it }
             }
+            applyNightMode(savedMode)
+        }
+    }
+
+    private fun applyNightMode(mode: ThemeMode) {
+        val nightMode = when (mode) {
+            ThemeMode.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+            ThemeMode.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+            ThemeMode.SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        if (AppCompatDelegate.getDefaultNightMode() != nightMode) {
+            AppCompatDelegate.setDefaultNightMode(nightMode)
         }
     }
 
@@ -141,6 +155,7 @@ object ThemeSettings {
             settingsManager?.clearAllSettings()
             // Reset local states to default values immediately
             _themeMode = ThemeMode.SYSTEM
+            applyNightMode(ThemeMode.SYSTEM)
             _appLanguage = AppLanguage.SYSTEM
             _isDynamicColorEnabled = true
             _customSeedColor = null
