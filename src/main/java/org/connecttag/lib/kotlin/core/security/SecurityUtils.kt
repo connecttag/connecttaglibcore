@@ -1,90 +1,54 @@
 package org.connecttag.lib.kotlin.core.security
 
 import android.content.Context
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import android.util.Base64
-import java.nio.charset.StandardCharsets
+import java.security.KeyStore
 import javax.crypto.Cipher
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
-import java.security.SecureRandom
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import javax.crypto.spec.GCMParameterSpec
 
-/**
- * Utility class for encryption and decryption operations using Android KeyStore.
- * Note: For DataStore, we manually encrypt/decrypt strings using a master key approach
- * because EncryptedDataStore is not yet officially stable in a simple way for Preferences.
- */
+/** Versioned authenticated encryption. Call on a background dispatcher. */
 object SecurityUtils {
+    private const val KEY_ALIAS = "connecttag_strings_v2"
+    private const val PREFIX = "ctg2:"
+    private const val TRANSFORMATION = "AES/GCM/NoPadding"
+    private val authenticatedVersion = PREFIX.toByteArray(Charsets.UTF_8)
 
-    private const val ALGORITHM = "AES/CBC/PKCS5Padding"
-    private const val KEY_ALIAS = "connecttag_master_key"
-
-    /**
-     * Encrypts a string using a key derived from the Android KeyStore.
-     */
-    fun encrypt(context: Context, value: String): String {
-        if (value.isEmpty()) return ""
-        try {
-            val masterKey = MasterKey.Builder(context)
-                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                .build()
-
-            // Note: Since we are using this for DataStore strings, we'll use a standard AES
-            // for the actual string encryption for simplicity in this utility.
-            // A more robust way would be using the MasterKey directly but that requires manual Cipher management.
-
-            val key = masterKey.toString().take(32).toByteArray(StandardCharsets.UTF_8)
-            val secretKey = SecretKeySpec(key, "AES")
-            val cipher = Cipher.getInstance(ALGORITHM)
-
-            val iv = ByteArray(16)
-            SecureRandom().nextBytes(iv)
-            val ivSpec = IvParameterSpec(iv)
-
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec)
-            val encrypted = cipher.doFinal(value.toByteArray(StandardCharsets.UTF_8))
-
-            val combined = ByteArray(iv.size + encrypted.size)
-            System.arraycopy(iv, 0, combined, 0, iv.size)
-            System.arraycopy(encrypted, 0, combined, iv.size, encrypted.size)
-
-            return Base64.encodeToString(combined, Base64.DEFAULT)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return value
-        }
+    @Synchronized private fun key(): SecretKey {
+        val store = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+        (store.getKey(KEY_ALIAS, null) as? SecretKey)?.let { return it }
+        return KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore").apply {
+            init(KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .setKeySize(256).build())
+        }.generateKey()
     }
 
-    /**
-     * Decrypts a string that was encrypted using [encrypt].
-     */
+    @Suppress("UNUSED_PARAMETER")
+    fun encrypt(context: Context, value: String): String {
+        if (value.isEmpty()) return ""
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        cipher.init(Cipher.ENCRYPT_MODE, key())
+        cipher.updateAAD(authenticatedVersion)
+        val encrypted = cipher.doFinal(value.toByteArray(Charsets.UTF_8))
+        return PREFIX + Base64.encodeToString(cipher.iv + encrypted, Base64.NO_WRAP)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
     fun decrypt(context: Context, encryptedValue: String): String {
         if (encryptedValue.isEmpty()) return ""
-        try {
-            val masterKey = MasterKey.Builder(context)
-                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                .build()
-
-            val key = masterKey.toString().take(32).toByteArray(StandardCharsets.UTF_8)
-            val secretKey = SecretKeySpec(key, "AES")
-            val cipher = Cipher.getInstance(ALGORITHM)
-
-            val combined = Base64.decode(encryptedValue, Base64.DEFAULT)
-            val iv = ByteArray(16)
-            val encrypted = ByteArray(combined.size - 16)
-
-            System.arraycopy(combined, 0, iv, 0, 16)
-            System.arraycopy(combined, 16, encrypted, 0, encrypted.size)
-
-            val ivSpec = IvParameterSpec(iv)
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
-
-            val decrypted = cipher.doFinal(encrypted)
-            return String(decrypted, StandardCharsets.UTF_8)
-        } catch (e: Exception) {
-            // If decryption fails (e.g. data was not encrypted), return as is
-            return encryptedValue
-        }
+        // Older versions also persisted plaintext after encryption failures. Preserve it
+        // without guessing keys or overwriting data; the next write uses the new format.
+        if (!encryptedValue.startsWith(PREFIX)) return encryptedValue
+        val combined = Base64.decode(encryptedValue.removePrefix(PREFIX), Base64.NO_WRAP)
+        require(combined.size >= 12 + 16)
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        cipher.init(Cipher.DECRYPT_MODE, key(), GCMParameterSpec(128, combined.copyOfRange(0, 12)))
+        cipher.updateAAD(authenticatedVersion)
+        return cipher.doFinal(combined, 12, combined.size - 12).toString(Charsets.UTF_8)
     }
 }

@@ -5,6 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -49,13 +52,13 @@ abstract class BasePreferenceStore(
     protected fun readEncrypted(key: Preferences.Key<String>, defaultValue: String = ""): Flow<String> =
         read(key, "").map { encryptedValue ->
             if (encryptedValue.isEmpty()) defaultValue else SecurityUtils.decrypt(context, encryptedValue)
-        }
+        }.flowOn(Dispatchers.IO)
 
     /**
      * Writes an encrypted string preference value.
      */
     protected suspend fun writeEncrypted(key: Preferences.Key<String>, value: String) {
-        val encryptedValue = SecurityUtils.encrypt(context, value)
+        val encryptedValue = withContext(Dispatchers.IO) { SecurityUtils.encrypt(context, value) }
         write(key, encryptedValue)
     }
 
